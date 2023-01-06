@@ -1,13 +1,7 @@
-
-
-exports.loginScreen = (req, res, next) =>{
+exports.getLogin = (req, res, next) =>{
+    console.log("login get")
     //TODO validation
-    res.render('register', { title: 'hila222',
+    res.render('login', { title: 'login',
     name: 'hilapila',
     boolian: 5<6});}
 
-exports.loginScreenbtn = (req, res, next) =>{
-    //TODO validation
-    res.render('index', { title: 'yoni',
-    name: 'YoniBayony2',
-    boolian: 5<6});}
