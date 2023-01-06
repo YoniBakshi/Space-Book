@@ -1,0 +1,17 @@
+<%- include('includes/head.ejs') %>
+
+<link rel='stylesheet' href='/stylesheets/style.css'/>
+</head>
+<body>
+<main>
+    <% if(boolian){ %>
+        <h1><%= title %></h1>
+        <p>Welcome to <%= name %></p>
+                <a class="btn" href="/"> blabla </a>
+
+<% }else { %>
+        <h1> blabla </h1>
+    <% } %>
+
+</main>
+<%- include('includes/end.ejs') %>
