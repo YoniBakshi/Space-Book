@@ -1,4 +1,4 @@
-exports.postPAss = (req, res, next) =>{
+exports.postRegisterPassword = (req, res, next) =>{
     //TODO validation
     res.render('register-password', { title: 'register-password',
         name: 'YoniBayony2',

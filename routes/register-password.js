@@ -1,9 +1,9 @@
-var express = require('express');
+let express = require('express');
 const loginController = require("../controllers/register-password");
-var router = express.Router();
+let router = express.Router();
 
-/* GET users listing. */
-router.get('/', loginController.postPAss)
+/* POST users listing. */
+router.get('/', loginController.postRegisterPassword)
 
 
 module.exports = router;

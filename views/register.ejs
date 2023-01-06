@@ -1,40 +1,62 @@
 <%- include('includes/head.ejs') %>
 
-<link rel='stylesheet' href='/stylesheets/style.css'/>
+<!--<link rel='stylesheet' href='./stylesheets/style.css'/>-->
 </head>
 <body>
 <main>
     <div class="container">
+
+        <!-- Top Title Registration Part 1 Page -->
+        <div class="container-fluid px-5">
+            <div class="row g-0" id="header-container">
+                <div class="p-2 mb-3 bg-transparent rounded-5 px-5">
+
+                    <!--<img class="image-fluid" src="../public/images/NASA-Logo.png" height="200px" width="200px"
+                         alt="NASA Logo">-->
+                    <p>
+                    <h2 class="text-center display-5 fs-2"> Please Register <br> Register </h2></p>
+
+                </div>
+            </div>
+        </div>
+
         <div class="row d-flex justify-content-center">
-            <div class="col-md-auto">
-                <form action="/register/data" method="POST">
+            <div class="col-md-8">
+                <form class="form-floating" action="/register/data" method="POST">
 
-                    <!-- Email input -->
-                    <div class=" form-outline mb-4 ">
-                        <input type="email" id="emailRegister" class="form-control" placeholder="Email address"/>
+                    <!-- Email Registration input -->
+                    <div class="form-floating mb-4">
+                        <input type="email" id="emailRegister" class="form-control" placeholder="Email address">
+                        <label for="floatingInputValue">Email address</label>
                     </div>
 
-                    <div class=" form-outline mb-4">
-                        <input type="text" id="firstName" class="form-control" placeholder="First Name"/>
+                    <!-- First Name Registration input -->
+                    <div class="form-floating mb-4">
+                        <input type="text" id="firstName" class="form-control" placeholder="First Name">
+                        <label for="floatingInputValue">First Name</label>
                     </div>
 
-                    <!-- Last Name input -->
-                    <div class="form-outline mb-4">
-                        <input type="text" id="lastName" class="form-control"  placeholder="Last Name"/>
+                    <!-- Last Name Registration input -->
+                    <div class="form-floating mb-4">
+                        <input type="text" id="lastName" class="form-control" placeholder="Last Name">
+                        <label for="floatingInputValue">Last Name</label>
                     </div>
 
-
-                    <!-- Submit button -->
-
-                        <a href="/register-password"> <button type="button" class="btn btn-primary btn-block mb-4">Next</button> </a>
-
-                    <!-- Register buttons -->
-                    <div class="text-center">
-                        <p>Already registered? go to <a href="/">login</a> page</p>
+                    <div class="row d-flex justify-content-center">
+                        <!-- Submit Part 1 Register button -->
+                        <a href="/register-password">
+                            <button type="button" class="btn btn-primary btn-block d-grid gap-2 mx-auto">Next</button>
+                        </a>
                     </div>
+
+                        <!-- Login button -->
+                        <div class="text-center">
+                            <p>Already registered? go to <a href="/">login</a> page</p>
+                        </div>
                 </form>
             </div>
         </div>
     </div>
 </main>
+
 <%- include('includes/end.ejs') %>

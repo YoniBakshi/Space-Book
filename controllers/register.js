@@ -1,4 +1,5 @@
 const User = require('../models/user')
+
 exports.getRegister = (req, res, next) =>{
     console.log("reg get")
     //TODO validation
@@ -9,7 +10,6 @@ exports.getRegister = (req, res, next) =>{
 
 exports.postRegister = (req, res, next) =>{
     console.log("reg post")
-
     try{
     const userInfo = new User(req.body.email, req.body.firstName, req.body.lastName)
         userInfo.save()

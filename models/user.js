@@ -1,9 +1,9 @@
 
-/** A MODULE to manage the Product model.
+/** A MODULE to manage the User model.
  * in future examples, we will use a database to store data.
  */
 
-module.exports = class Product {
+module.exports = class User {
     constructor(email, firstName, lastName) {
         this.email = email;
         this.firstName = firstName;
@@ -16,10 +16,10 @@ module.exports = class Product {
 
     save() {
         if (!this.email || !this.firstName || !this.lastName) {
-            throw new Error('Product must have a title, price and id');
+            throw new Error('User must have a title, price and id');
         }
         if (productList.includes(this.email)) {
-            throw new Error('Product already exists');
+            throw new Error('User already exists');
         }
         console.log(this.email)
         productList.push(this);

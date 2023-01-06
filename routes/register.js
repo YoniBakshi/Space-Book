@@ -1,11 +1,13 @@
-var express = require('express');
+let express = require('express');
+// Load the controllers
 const loginController = require("../controllers/register");
-var router = express.Router();
 
-/* GET users listing. */
+let router = express.Router();
+
+/* /register/ => GET users listing. */
 router.get('/', loginController.getRegister)
 
-/* POST users listing. */
+/* /register/data => POST users listing. */
 router.post('/data', loginController.postRegister)
 
 
