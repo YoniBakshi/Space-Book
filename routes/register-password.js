@@ -6,4 +6,5 @@ let router = express.Router();
 router.get('/', loginController.postRegisterPassword)
 
 
+
 module.exports = router;

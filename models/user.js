@@ -18,22 +18,22 @@ module.exports = class User {
         if (!this.email || !this.firstName || !this.lastName) {
             throw new Error('User must have a title, price and id');
         }
-        if (productList.includes(this.email)) {
+        if (userList.includes(this.email)) {
             throw new Error('User already exists');
         }
         console.log(this.email)
-        productList.push(this);
+        userList.push(this);
     }
 
     /** Fetch all products from the file.
      * @returns {Array} an array of products.
      */
     static fetchAll() {
-        return (productList);
+        return (userList);
     }
 
     static getLength() {
-        return productList.length;
+        return userList.length;
     }
 };
 
@@ -41,5 +41,5 @@ module.exports = class User {
  this example stores the model in memory. Ideally these should be stored
  persistently in a database.
  */
-let productList = [];
+let userList = [];
 
