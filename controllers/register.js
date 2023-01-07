@@ -13,7 +13,7 @@ exports.getRegister = (req, res, next) =>{
 exports.postRegister = (req, res, next) =>{
     console.log(req.body.emailRegister)
     try{
-    const userInfo = new User(req.body.emailRegister, req.body.firstName, req.body.lastName)
+    const userInfo = new User(req.body.emailRegister.trim().toLowerCase(), req.body.firstName.trim(), req.body.lastName.trim())
         userInfo.save()
         res.redirect('/register-password')
     }catch(err){

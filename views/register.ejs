@@ -27,19 +27,19 @@
 
                     <!-- Email Registration input -->
                     <div class="form-floating mb-4">
-                        <input type="email" id="emailRegister" name="emailRegister" class="form-control" placeholder="Email address" required>
+                        <input type="email" id="emailRegister" name="emailRegister" class="form-control" placeholder="Email address" minlength="3" maxlength="32" required>
                         <label for="floatingInputValue">Email address</label>
                     </div>
 
                     <!-- First Name Registration input -->
                     <div class="form-floating mb-4">
-                        <input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" required>
+                        <input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" minlength="3" maxlength="32" pattern="[a-zA-Z]+" required>
                         <label for="floatingInputValue">First Name</label>
                     </div>
 
                     <!-- Last Name Registration input -->
                     <div class="form-floating mb-4">
-                        <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last Name" required>
+                        <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last Name" minlength="3" maxlength="32" pattern="[a-zA-Z]+" required>
                         <label for="floatingInputValue">Last Name</label>
                     </div>
 
