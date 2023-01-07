@@ -9,6 +9,7 @@ exports.getRegister = (req, res, next) =>{
         boolian: 5<6});
 }
 
+
 exports.postRegister = (req, res, next) =>{
     console.log(req.body.emailRegister)
     try{
