@@ -23,7 +23,7 @@
 
         <div class="row d-flex justify-content-center">
             <div class="col-md-8">
-                <form class="form-floating" action="/register" method="POST">
+                <form class="form-floating" action="/users/register" method="POST">
 
                     <!-- Email Registration input -->
                     <div class="form-floating mb-4">
@@ -33,13 +33,13 @@
 
                     <!-- First Name Registration input -->
                     <div class="form-floating mb-4">
-                        <input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" minlength="3" maxlength="32" pattern="[a-zA-Z]+" required>
+                        <input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" minlength="3" maxlength="32" pattern="[a-zA-Z]+( [a-zA-Z]+)*$" required>
                         <label for="floatingInputValue">First Name</label>
                     </div>
 
                     <!-- Last Name Registration input -->
                     <div class="form-floating mb-4">
-                        <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last Name" minlength="3" maxlength="32" pattern="[a-zA-Z]+" required>
+                        <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last Name" minlength="3" maxlength="32" pattern="[a-zA-Z]+( [a-zA-Z]+)*$" required>
                         <label for="floatingInputValue">Last Name</label>
                     </div>
 

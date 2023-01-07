@@ -15,11 +15,17 @@ exports.postRegister = (req, res, next) =>{
     try{
     const userInfo = new User(req.body.emailRegister.trim().toLowerCase(), req.body.firstName.trim(), req.body.lastName.trim())
         userInfo.save()
-        res.redirect('/register-password')
+        res.redirect('/users/register-password')
     }catch(err){
         console.log("reg postghjkghjk")
 
         //TODO
     }
 }
-
+/*
+exports.postRegisterPassword = (req, res, next) =>{
+    //TODO validation
+    res.render('register-password', {
+        title: 'register-password',
+        name: 'YoniBayony2',
+        boolian: 5<6});}*/
