@@ -9,12 +9,14 @@ exports.getRegister = (req, res, next) =>{
 }
 
 exports.postRegister = (req, res, next) =>{
-    console.log("reg post")
+    console.log(req.body.emailRegister)
     try{
-    const userInfo = new User(req.body.email, req.body.firstName, req.body.lastName)
+    const userInfo = new User(req.body.emailRegister, req.body.firstName, req.body.lastName)
         userInfo.save()
-        res.redirect('/')
+        res.redirect('/register-password')
     }catch(err){
+        console.log("reg postghjkghjk")
+
         //TODO
     }
 }
