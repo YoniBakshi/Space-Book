@@ -11,5 +11,4 @@ router.get('/', loginController.getRegister)
 router.post('/', loginController.postRegister)
 
 
-
 module.exports = router;
