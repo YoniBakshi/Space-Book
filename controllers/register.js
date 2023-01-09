@@ -38,7 +38,6 @@ exports.postRegister = (req, res, next) =>{
     return res.redirect("/users/register");*/
 
 
-
     try {
         //Supposed to be inside try but it might change - started
         res.cookie("registerData", {userFirstName, userLastName, userEmail} , {maxAge : 30 * 10 * 100, httpOnly : true})

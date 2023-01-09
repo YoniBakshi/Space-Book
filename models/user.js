@@ -13,7 +13,6 @@ module.exports = class User {
     /** Save the product to a file.
      * @throws {Error} if the product already exists or if the product has no title.
      * */
-
     save() {
         if (!this.email || !this.firstName || !this.lastName) {
             throw new Error('User must have a title, price and id');

@@ -20,5 +20,4 @@ router.get('/register-password', registerPassController.getRegisterPassword)
 /* POST users listing. */
 router.post('/register-password', registerPassController.postRegisterPassword)
 
-
 module.exports = router;

@@ -12,7 +12,6 @@ exports.getRegisterPassword = (req, res, next) => {
     });
 }
 
-
 exports.postRegisterPassword = (req, res, next) => {
     // Receive cookie
     const dataCookie = req.cookies.registerData ? req.cookies.registerData : {} ;

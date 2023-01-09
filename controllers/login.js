@@ -3,3 +3,4 @@ exports.getLogin = (req, res, next) =>{
     //TODO validation
     res.render('login', { title: 'login',});
 }
+
