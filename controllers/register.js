@@ -38,6 +38,7 @@ exports.postRegister = (req, res, next) =>{
     return res.redirect("/users/register");*/
 
 
+
     try {
         //Supposed to be inside try but it might change - started
         res.cookie("registerData", {userFirstName, userLastName, userEmail} , {maxAge : 30 * 10 * 100, httpOnly : true})
@@ -54,4 +55,10 @@ exports.postRegister = (req, res, next) =>{
         //TODO
     }
 }
-
+/*
+exports.postRegisterPassword = (req, res, next) =>{
+    //TODO validation
+    res.render('register-password', {
+        title: 'register-password',
+        name: 'YoniBayony2',
+        boolian: 5<6});}*/
