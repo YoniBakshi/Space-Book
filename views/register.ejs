@@ -13,9 +13,12 @@
 
                     <img class="image-fluid" src="/images/NASA-Logo.png" height="200px" width="250px"
                          alt="NASA Logo">
-                    <p>
-                    <h2 class="text-center display-5 fs-2"> Please Register <br> Register </h2></p>
 
+                    <!-- TODO size-->
+                    <p><h2 class="text-center display-5 fs-2"> Please Register <br> Register </h2></p>
+                    <% if(error) { %>
+                        <p><h5 class="text-center text-danger "> <%= error %></h5></p>
+                    <% } %>
 
                 </div>
             </div>
@@ -27,19 +30,19 @@
 
                     <!-- Email Registration input -->
                     <div class="form-floating mb-4">
-                        <input type="email" id="emailRegister" name="emailRegister" class="form-control" placeholder="Email address" minlength="3" maxlength="32" required>
+                        <input type="email" id="emailRegister" name="emailRegister" class="form-control" placeholder="Email address" minlength="3" maxlength="32" value="<%= registerData.userEmail %>" required>
                         <label for="floatingInputValue">Email address</label>
                     </div>
 
                     <!-- First Name Registration input -->
                     <div class="form-floating mb-4">
-                        <input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" minlength="3" maxlength="32" pattern="[a-zA-Z]+( [a-zA-Z]+)*$" required>
+                        <input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" minlength="3" maxlength="32" pattern="[a-zA-Z]+( [a-zA-Z]+)*$"  value="<%= registerData.userFirstName %>" required>
                         <label for="floatingInputValue">First Name</label>
                     </div>
 
                     <!-- Last Name Registration input -->
                     <div class="form-floating mb-4">
-                        <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last Name" minlength="3" maxlength="32" pattern="[a-zA-Z]+( [a-zA-Z]+)*$" required>
+                        <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last Name" minlength="3" maxlength="32" pattern="[a-zA-Z]+( [a-zA-Z]+)*$" value="<%= registerData.userLastName %>" required>
                         <label for="floatingInputValue">Last Name</label>
                     </div>
 
