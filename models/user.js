@@ -2,7 +2,6 @@
 /** A MODULE to manage the User model.
  * in future examples, we will use a database to store data.
  */
-
 module.exports = class User {
     constructor(email, firstName, lastName, password) {
         this.email = email;
@@ -14,7 +13,6 @@ module.exports = class User {
     /** Save the product to a file.
      * @throws {Error} if the product already exists or if the product has no title.
      * */
-
     save() {
         if (!this.email || !this.firstName || !this.lastName || !this.password) {
             throw new Error('User must have a title, price and id');

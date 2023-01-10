@@ -19,6 +19,7 @@ exports.header = (req, res, next) => {
  */
 exports.getRegister = (req, res, next) =>{
     console.log("reg get")
+
     // TODO validation
     // Contains all the data of current cookie or if theres no data so no cookie
     let registerData = req.cookies.registerData ? req.cookies.registerData : {}
