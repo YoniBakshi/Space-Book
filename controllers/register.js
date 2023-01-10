@@ -38,17 +38,15 @@ exports.postRegister = (req, res, next) =>{
     res.cookie("error", "This Email is already in use 1", {maxAge : 30 * 10 * 100, httpOnly : true})
     return res.redirect("/users/register");*/
 
-
-
     try {
         //Supposed to be inside try but it might change - started
         res.cookie("registerData", {userFirstName, userLastName, userEmail} , {maxAge : 10 * 10 * 100, httpOnly : true})
 
-        if(User.fetchAll().find((item) => item.email === this.email)) {
+/*        if(User.fetchAll().find((item) => item.email === this.email)) {
             res.cookie("error", "This email is already in use 1")
             console.log("error post reg")
             return res.redirect("./register/")
-        }
+        }*/
         res.redirect('/users/register-password')
     } catch(err) {
         console.log("reg postghjkghjk")
