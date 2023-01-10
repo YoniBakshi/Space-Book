@@ -4,10 +4,11 @@
  */
 
 module.exports = class User {
-    constructor(email, firstName, lastName) {
+    constructor(email, firstName, lastName, password) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.password = password;
     }
 
     /** Save the product to a file.
@@ -15,18 +16,20 @@ module.exports = class User {
      * */
 
     save() {
-        if (!this.email || !this.firstName || !this.lastName) {
+        if (!this.email || !this.firstName || !this.lastName || !this.password) {
             throw new Error('User must have a title, price and id');
         }
-        if (userList.includes(this.email)) {
-            throw new Error('User already exists');
+        if (userList.find((item) => item.email === this.email)) {
+            console.log(userList)
+            return false;
         }
-        console.log(this.email)
         userList.push(this);
+
+        return true;
     }
 
     /** Fetch all products from the file.
-     * @returns {Array} an array of products.
+     * @returns {Array} an array of users.
      */
     static fetchAll() {
         return (userList);
