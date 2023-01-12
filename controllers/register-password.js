@@ -33,6 +33,7 @@ exports.postRegisterPassword = async (req, res, next) => {
         const password = req.body.passwordRegister;
         //create a row in the table
         await db.User.create({ email, firstName, lastName, password });
+
         //to debug
 /*        const users = await db.User.findAll();
         console.log(users);*/
