@@ -1,15 +1,5 @@
-const User = require('../models/user')
-
-// Responsible on the error messages
-exports.header = (req, res, next) => {
-    res.locals.error = req.cookies.error || false;
-    res.locals.title = "This is a default title";
-    res.locals.registerData = {};
-
-    if (req.cookies.error)
-        res.clearCookie('error');
-    next();
-}
+//const Cookies = require('cookies')
+const db = require('../models')
 
 /**
  * Register button was clicked or time expired /
@@ -29,35 +19,26 @@ exports.getRegister = (req, res, next) =>{
         registerData});
 }
 
-exports.postRegister = (req, res, next) =>{
+exports.postRegister = async (req, res, next) => {
     const userFirstName = req.body.firstName.trim();
     const userLastName = req.body.lastName.trim();
     const userEmail = req.body.emailRegister.trim().toLowerCase();
 
-    /*if ...
-    res.cookie("error", "This Email is already in use 1", {maxAge : 30 * 10 * 100, httpOnly : true})
-    return res.redirect("/users/register");*/
-
     try {
-        //Supposed to be inside try but it might change - started
-        res.cookie("registerData", {userFirstName, userLastName, userEmail} , {maxAge : 10 * 10 * 100, httpOnly : true})
+        if(req.cookies.registerData) {
+            res.clearCookie("registerData");
+        }
+        res.cookie("registerData", {userFirstName, userLastName, userEmail} , {maxAge : 30 * 10 * 100, httpOnly : true});
 
-/*        if(User.fetchAll().find((item) => item.email === this.email)) {
-            res.cookie("error", "This email is already in use 1")
-            console.log("error post reg")
-            return res.redirect("./register/")
-        }*/
-        res.redirect('/users/register-password')
+        const existingUser = await db.User.findOne({ where: { email: userEmail } });
+        if (existingUser) {
+            res.cookie("message", "The email is already in use, please choose other one.");
+            return res.redirect('/users/register');
+        }
+        res.redirect('/users/register-password');
     } catch(err) {
-        console.log("reg postghjkghjk")
-
-        //TODO
+        console.log(err);
+        res.cookie("message", "Error Occured, Please try again later");
+        return res.redirect('/users/register');
     }
 }
-/*
-exports.postRegisterPassword = (req, res, next) =>{
-    //TODO validation
-    res.render('register-password', {
-        title: 'register-password',
-        name: 'YoniBayony2',
-        boolian: 5<6});}*/

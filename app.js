@@ -5,6 +5,7 @@ let cookieParser = require('cookie-parser');
 let logger = require('morgan');
 let loginRouter = require('./routes/login');
 let registerRouter = require('./routes/users');
+const registerController = require("./controllers/register");
 
 let app = express();
 
@@ -18,7 +19,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//middleware
+app.use(function(req, res, next){
+  res.locals.message = req.cookies.message || false;
+  res.locals.title = "This is a default title";
+  res.locals.registerData = {};
 
+  if (req.cookies.message)
+    res.clearCookie('message');
+  next();
+})
 // Plug in the routes
 app.use('/', loginRouter);
 app.use('/users', registerRouter);

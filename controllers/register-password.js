@@ -4,7 +4,7 @@ const db = require('../models')
 exports.getRegisterPassword = (req, res, next) => {
     //TODO validation
     if (!req.cookies.registerData) {
-        res.cookie("error", "The time has expired basuhsh");
+        res.cookie("message", "basush Registration process expired. Please start again. FASTER DUDE");
         return res.redirect('/users/register');
     }
 
@@ -19,14 +19,14 @@ exports.postRegisterPassword = async (req, res, next) => {
         const dataCookie = req.cookies.registerData;
         //if it's not already exist return error
         if (!dataCookie) {
-            res.cookie("error", "The time has expired");
+            res.cookie("message", "Registration process expired. Please start again.");
             return res.redirect('/users/register');
         }
         //check if the entered email is caught
         const existingUser = await db.User.findOne({ where: { email: dataCookie.userEmail } });
         //if it's already exist return error
         if (existingUser) {
-            res.cookie("error", "The email is already exist 2, FASTER NEXT TIME DUDE");
+            res.cookie("message", "The email is already in use, please choose other one.");
             return res.redirect('/users/register');
         }
         const { userEmail: email, userFirstName: firstName, userLastName: lastName } = dataCookie;
@@ -36,7 +36,15 @@ exports.postRegisterPassword = async (req, res, next) => {
         //to debug
 /*        const users = await db.User.findAll();
         console.log(users);*/
+        if(password !== req.body.passwordConfirm){
+            res.cookie("message", "Passwords do not match, please try again.");
+            return res.redirect('/users/register-password');
+        }
+        if(req.cookies.registerData) {
+            res.clearCookie("registerData");
+        }
         //if succeed go back to login
+        res.cookie("message", "Registration successful, you can login now");
         return res.redirect('/');
     } catch (error) {
         console.error(error);
