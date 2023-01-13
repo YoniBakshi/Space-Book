@@ -5,7 +5,7 @@ let cookieParser = require('cookie-parser');
 let logger = require('morgan');
 let loginRouter = require('./routes/login');
 let registerRouter = require('./routes/users');
-const registerController = require("./controllers/register");
+let session = require('express-session')
 
 let app = express();
 
@@ -19,6 +19,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+// Enable sessions
+app.use(session( {
+  secret: "someSecretKey",
+  resave: false ,      // Force save of session for each request
+  saveUninitialized: false,  // Save a session that is new, but has not been modified
+  cookie: { maxAge: 10*60*1000 }
+}))
+
+
 //middleware
 app.use(function(req, res, next){
   res.locals.message = req.cookies.message || '';
@@ -29,6 +39,7 @@ app.use(function(req, res, next){
     res.clearCookie('message');
   next();
 })
+
 // Plug in the routes
 app.use('/', loginRouter);
 app.use('/users', registerRouter);
