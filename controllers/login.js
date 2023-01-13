@@ -2,6 +2,7 @@ const db = require("../models");
 exports.getLogin = (req, res, next) => {
     console.log("login get")
     if(req.session.visitor === 1){
+        req.session.visitor = 0;
         res.render('register', {
             titlePage: 'login',
             msgP1: 'Please Sign-In',
@@ -9,7 +10,7 @@ exports.getLogin = (req, res, next) => {
             message:req.cookies.message
         });
     }else{
-        console.log(req.session.visitor)
+
         //TODO validation
         res.render('login', {
             titlePage: 'login',
@@ -25,22 +26,18 @@ exports.getLogin = (req, res, next) => {
 exports.postLogin = async (req, res, next) => {
     /////////  Just started - only loads without doing anything   /////////
     try {
-      //  let currUser = await db.User.findOne({ where: {email: req.body.EmailLogin} ,
-        //C   attributes: ['id']})
-       // if (!currUser)
-       //     throw new MyError(`The email is not in the system.`,`/`);
-       // let dataUser = SELECT id, currUser FROM Users;
-       // console.log(dataUser)
-
-    if (!await db.User.findOne({ where: {email: req.body.EmailLogin}})) //check if the entered email is caught
+        const validPassword = await db.User.findOne({ where: {email: req.body.EmailLogin} ,
+            attributes: ['id']})
+    if (!validPassword) //check if the entered email is caught
         throw new MyError(`The email is not in the system.`,`/`);
 
-    const validPassword = await db.User.findOne({ where: {email: req.body.EmailLogin} ,
-        attributes: ['password', 'firstName', 'lastName']})
-    if(validPassword.dataValues.password !== req.body.passwordLogin)
+    const validUser = await db.User.findByPk(validPassword.dataValues.id);
+
+    if(validUser.dataValues.password !== req.body.passwordLogin)
         throw new MyError(`The password is not in the system.`,`/`);
+
     req.session.visitor =1;
-    req.session.userFullName =`${validPassword.dataValues.firstName} ${validPassword.dataValues.lastName}`
+    req.session.userFullName =`${validUser.dataValues.firstName} ${validUser.dataValues.lastName}`
 
     res.redirect('/')
     } catch (error) {
@@ -50,7 +47,6 @@ exports.postLogin = async (req, res, next) => {
         }
         res.status(500).send('Error occurred');
     }
-    console.log(";lkjhgfdfghjklkjhgf")
 }
 
 
