@@ -15,7 +15,10 @@ exports.getRegister = (req, res, next) =>{
     let registerData = req.cookies.registerData ? req.cookies.registerData : {}
 
     res.render('register', {
-        title: 'register',
+        titlePage: 'register',
+        msgP1: 'Please Register',
+        msgP2:'Register',
+        message:req.cookies.message,
         registerData});
 }
 

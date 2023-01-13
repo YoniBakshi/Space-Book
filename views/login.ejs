@@ -8,26 +8,7 @@
     <div class="container">
 
         <!-- Top Title Login Page -->
-        <div class="container-fluid px-5">
-            <div class="row g-0" id="header-container">
-                <div class="p-2 mb-3 bg-transparent rounded-5 px-5" style="text-align:center">
-
-                    <img class="image-fluid" src="/images/NASA-Logo.png" height="200px" width="250px"
-                         alt="NASA Logo">
-
-                   <p>
-                    <h2 class="text-center display-5 fs-2"> Please Sign-In <br> Exercise 6 (Part 1) </h2></p>
-                    <% if(message) { %>
-                        <p><h5 class="text-center text-danger"> <%= message %> </h5></p>
-                    <% } %>
-
-                    <!--                    < if(registerSucc) { >
-                                           <p><h5 class="text-center text-danger"> You're registered </h5></p>
-                                       < } > -->
-
-                </div>
-            </div>
-        </div>
+        <%- include('includes/topForm.ejs') %>
 
         <div class="row d-flex justify-content-center">
             <div class="col-md-8">

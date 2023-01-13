@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //middleware
 app.use(function(req, res, next){
-  res.locals.message = req.cookies.message || false;
+  res.locals.message = req.cookies.message || '';
   res.locals.title = "This is a default title";
   res.locals.registerData = {};
 
