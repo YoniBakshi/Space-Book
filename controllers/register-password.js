@@ -1,4 +1,5 @@
 const db = require('../models')
+const MyError = require("../utils/utils");
 
 // Next was clicked - load the next pagee which is register password
 exports.getRegisterPassword = (req, res, next) => {
@@ -43,12 +44,6 @@ exports.postRegisterPassword = async (req, res, next) => {
     }
 }
 
-class MyError extends Error {
-    constructor(message, redirect) {
-        super(message);
-        this.redirect = redirect;
-    }
-}
 
 
 //to debug
