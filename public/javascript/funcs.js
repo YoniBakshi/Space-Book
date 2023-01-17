@@ -363,17 +363,18 @@
      * @returns {string} string HTML of submitted comment
      */
     const addCommentsToModal = (data) => {
+        console.log(document.getElementById("userId").getAttribute("value"))
         let commentInfo = ``;
         data.forEach(function (item) {
-            let delLink = item.username === document.getElementById("userName").getAttribute("name") ?
-                ` <a class="btn btn-link mr-2 to-del" href="del/${item.postId}" id="del-${item.postId}">delete</a>` : ``
+            let delLink = item.userId === document.getElementById("userId").getAttribute("value") ?
+                ` <a class="btn btn-link mr-2 to-del" href="del/${item.userId}" id="del-${item.userId}">delete</a>` : ``
             commentInfo +=
                 `<div class="card mb-4">
                         <div class="card-body">
-                            <p class="text-black">${item.commentField}</p>
+                            <p class="text-black">${item.comment}</p>
                             <div class="d-flex justify-content-between">
                                 <div class="d-flex flex-row align-items-center">
-                                    <p class="small mb-0 ms-2 fw-bold"> ${item.username}</p>
+                                    <p class="small mb-0 ms-2 fw-bold">${document.getElementById("userName").getAttribute("value")}</p>
                                 </div>
                                 <div class="d-flex flex-row align-items-center">
                                     <p class="small text-muted mb-0">${delLink}</p>
