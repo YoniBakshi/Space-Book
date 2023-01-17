@@ -5,7 +5,8 @@ exports.getHome = (req, res, next) => {
 
         //TODO validation
         res.render('homePage', {
-            titlePage: 'NASA'
+            titlePage: 'NASA',
+            userName: req.session.userFullName
         });
 }
 
@@ -21,4 +22,5 @@ exports.postHome = async (req, res, next) => {
         res.status(500).send('Error occurred');
     }
 }
+
 

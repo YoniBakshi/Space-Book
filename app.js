@@ -25,7 +25,7 @@ app.use(session({
     secret: "someSecretKey",
     resave: false,      // Force save of session for each request
     saveUninitialized: false,  // Save a session that is new, but has not been modified
-    cookie: {maxAge: 10 * 60 * 1000}
+//    cookie: {maxAge: 10 * 10 * 100}
 }))
 
 // Middleware
@@ -41,7 +41,8 @@ app.use(function (req, res, next) {
 
 // Middleware function to check for session
 app.use(function(req, res, next) {
-  if (!req.session.connection && (req.url !== '/' && req.url !== '/users/register')) {
+  if (!req.session.connection && (req.url !== '/' && req.url !== '/users/register'
+      && req.url !== '/users/register-password')) {
     res.redirect('/');
   } else/* if(req.session.connection)
       res.redirect('/')*/

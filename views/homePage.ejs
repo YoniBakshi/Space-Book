@@ -19,14 +19,14 @@
             </div>
         </div>
     </div>
-
-   <!-- &lt;!&ndash; Container Load Page Of Card Images &ndash;&gt;
-    <div class="container-fluid px-5 py-5 h-10  mx-auto d-none" id="page">
+    <div id="userName" name="<%= userName%>"></div>
+    <!-- Container Load Page Of Card Images -->
+    <div class="container-fluid px-5 py-5 h-10  mx-auto " id="page">
         <div id="imgCard">
 
         </div>
 
-        &lt;!&ndash; Modal Of Clicked Image &ndash;&gt;
+        <!-- Modal Of Clicked Image -->
         <div class="modal fade" id="imgModal" tabindex="-1" aria-labelledby="imgModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
                 <div class="modal-content">
@@ -40,7 +40,7 @@
                         <button type="button" class="col-1 btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                     </div>
-                    &lt;!&ndash; Data of Card Image : Media (Image/Video), Explanation, Comments, Add Comment &ndash;&gt;
+                    <!-- Data of Card Image : Media (Image/Video), Explanation, Comments, Add Comment -->
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12">
@@ -52,16 +52,16 @@
                                 <div class="d-flex justify-content-center">
                                     <div class="card shadow-0 border" style="background-color: #f0f2f5;">
                                         <div class="card-body p-4 mb-4">
-                                            &lt;!&ndash; Form - User Can Submit a Comment &ndash;&gt;
+                                            <!-- Form - User Can Submit a Comment -->
                                             <div class="form-outline">
-                                                <form action="/resources" method="post" id="commentPost">
+                                                <form action="/home/resources" method="post" id="commentPost">
                                                     <input type="text" id="user-input" class="form-control mb-4"
                                                            placeholder="Type your comment...">
                                                     <div id="inputSizeError" class="d-none">
                                                         <p style="color:red;"> Input must be between 1-128 letters. </p>
                                                     </div>
                                                 </form>
-                                                &lt;!&ndash; Published Comments &ndash;&gt;
+                                                <!-- Published Comments -->
                                                 <div id="comments-data">
                                                 </div>
                                             </div>
@@ -74,7 +74,7 @@
                 </div>
             </div>
         </div>
-    </div>-->
+    </div>
 </div>
 
 <script src="https://unpkg.com/infinite-scroll@4/dist/infinite-scroll.pkgd.js"></script>
