@@ -8,7 +8,6 @@ exports.getHome = (req, res, next) => {
         //TODO validation
         res.render('homePage', {
             titlePage: 'NASA',
-            userId: req.session.id,
             userFullName: req.session.userFullName
         });
 }
@@ -17,16 +16,17 @@ exports.postHome = async (req, res, next) => {
     try {
         const comment = req.body.currComment;
         const imgId = req.body.id;
-        const userId = req.session.id;
+        const userEmail = req.session.email;
+        console.log(userEmail+"ggggggggggggggggggggggggggggggggggggggggg")
         const status = false;
 
         // Validate request body
-            if (!userId || !imgId || !comment) {
+            if (!userEmail || !imgId || !comment) {
                 return res.status(400).json({ message: 'All fields are required' });
             }
 
             // Check if userName is a string
-            if (typeof userId !== 'string') {
+            if (typeof userEmail !== 'string') {
                 return res.status(400).json({ message: 'userId must be a string' });
             }
 
@@ -39,7 +39,7 @@ exports.postHome = async (req, res, next) => {
             if (typeof comment !== 'string')
                 return res.status(400).json({ message: 'comment must be a string' });
 
-        db.Comment.create({userId, comment, imgId, status})
+        db.Comment.create({userEmail, comment, imgId, status})
 
         // If all validation checks pass, create resource
 
@@ -52,6 +52,7 @@ exports.postHome = async (req, res, next) => {
         };
         index++;
         itGoJson.push(resource);*/
+
         res.json(itGoJson);
     } catch (error) {
         if(error instanceof MyError) {
@@ -67,10 +68,26 @@ exports.getComments = async (req, res, next) => {
 
     try {
         const resourceId = req.params.id;
-        const validUser = await db.Comment.findAll({ where: {imgId: resourceId}})
+        const commentList = await db.Comment.findAll({ where: {imgId: resourceId}})
 
        // const resource = validUser.filter(w => w.status === false);
-        res.status(200).json(validUser)
+
+        const result = [];
+
+        for (const item of commentList) {
+            const userOwner = await db.User.findOne({where: {email: item.dataValues.userEmail}})
+
+            if(!item.dataValues.status){
+                const firstName = userOwner.dataValues.firstName
+                const lastName = userOwner.dataValues.lastName
+                const commentId = item.dataValues.id
+                const comment = item.dataValues.comment
+                const owner = req.session.email === userOwner.dataValues.email
+                result.push({firstName, lastName, owner, commentId, comment})
+            }
+        }
+
+        res.status(200).json(result)
     } catch (error) {
         if(error instanceof MyError) {
 
@@ -86,17 +103,10 @@ exports.deleteComment = async (req, res, next) => {
 
     try {
         const resourceId = Number(req.params.id);
-
-        // Find the index of the resource in the itGoJson array
-        const index = itGoJson.findIndex(w => w.postId === resourceId);
-
-        // If the resource is not found, return a 404 response
-        if (index === -1) {
-            return res.status(404).json({msg: `Resource not found. id ${resourceId}`});
-        }
-        // Remove the resource from the array
-        itGoJson.splice(index, 1);
-
+        const userOwner = await db.Comment.findOne({where: {id: resourceId}})
+        userOwner.dataValues.status = true;
+        //console.log(userOwner)
+        userOwner.save()
         // Return a success response
         res.status(200).json({msg: "Success"});
     } catch (error) {

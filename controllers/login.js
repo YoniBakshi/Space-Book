@@ -33,7 +33,7 @@ exports.postLogin = async (req, res, next) => {
         throw new MyError(`The password is not in the system.`,`/`);
 
     req.session.connection = true;
-    req.session.id = `${validUser.dataValues.id}`;
+    req.session.email = `${validUser.dataValues.email}`;
     req.session.userFullName =`${validUser.dataValues.firstName} ${validUser.dataValues.lastName}`
 
     res.redirect('/')

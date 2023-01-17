@@ -199,6 +199,7 @@
         getDataPostedComments()
         intrevalId = setInterval(getDataPostedComments, 15000);
         const deleteItem = event.target.id.replace("del-", "");
+        console.log(deleteItem)
         // Validation: Make sure deleteItem is a non-empty string
         if (!deleteItem || typeof deleteItem !== 'string') {
             document.getElementById("main-container").innerHTML = `<h1 class="text-bg-light">Error: deleteItem must be a non-empty string</h1>`;
@@ -210,6 +211,7 @@
             }).then(function (data) {
             if (data.status >= 400)
                 throw new Error(`Msg: ${data.msg}`);
+            getDataPostedComments()
         })
             .catch(function (error) {
                 document.getElementById("main-container").innerHTML = `<h1 class="text-bg-light">${error}</h1>`;
@@ -363,18 +365,17 @@
      * @returns {string} string HTML of submitted comment
      */
     const addCommentsToModal = (data) => {
-        console.log(document.getElementById("userId").getAttribute("value"))
         let commentInfo = ``;
         data.forEach(function (item) {
-            let delLink = item.userId === document.getElementById("userId").getAttribute("value") ?
-                ` <a class="btn btn-link mr-2 to-del" href="del/${item.userId}" id="del-${item.userId}">delete</a>` : ``
+            let delLink = item.owner ?
+                ` <a class="btn btn-link mr-2 to-del" href="del/${item.commentId}" id="del-${item.commentId}">delete</a>` : ``
             commentInfo +=
                 `<div class="card mb-4">
                         <div class="card-body">
                             <p class="text-black">${item.comment}</p>
                             <div class="d-flex justify-content-between">
                                 <div class="d-flex flex-row align-items-center">
-                                    <p class="small mb-0 ms-2 fw-bold">${document.getElementById("userName").getAttribute("value")}</p>
+                                    <p class="small mb-0 ms-2 fw-bold">${item.firstName} ${item.lastName}</p>
                                 </div>
                                 <div class="d-flex flex-row align-items-center">
                                     <p class="small text-muted mb-0">${delLink}</p>
