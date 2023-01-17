@@ -69,7 +69,7 @@ exports.getComments = async (req, res, next) => {
         const resourceId = req.params.id;
         const validUser = await db.Comment.findAll({ where: {imgId: resourceId}})
 
-        const resource = itGoJson.filter(w => w.id === resourceId);
+       // const resource = validUser.filter(w => w.status === false);
         res.status(200).json(validUser)
     } catch (error) {
         if(error instanceof MyError) {
