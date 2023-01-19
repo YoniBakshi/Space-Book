@@ -113,10 +113,11 @@
      */
     function getDataFromNASA() {
         // Validation: Make sure date is correct
-        console.log(date.getNewDate().start)
         if (!isValidDate(date.getNewDate().end) || !isValidDate(date.getNewDate().start))
-            document.getElementById("main-container").innerHTML = `<h1 class="text-bg-light">Error: Date is not defined</h1>`;
+            updateMainContainerWithError("Error : Date is not defined11");
+        creatToggle("spinner-img")
 
+        //document.getElementById("spinner").innerHTML += ''
         fetch(`${APIURL}?api_key=${APIKEY}&start_date=${date.getNewDate().start}&end_date=${date.getNewDate().end}`)
             .then(function (response) {
                 return response.json();
@@ -127,9 +128,48 @@
                 create3ImgSerie(data)
             })
             .catch(function (error) {                       // NASA's error message
-                console.log("1")
-                document.getElementById("main-container").innerHTML = `<h1 class="text-bg-light">${error}</h1>`
+                updateMainContainerWithError(error)
+            }).finally(() => {
+            creatToggle("spinner-img")
+        })
+    }
+
+    /**
+     * Validate the form input and update the main container with an error message if necessary
+     * @param event = Submit comment
+     */
+    function validateFormInput(event) {
+        if (!event.target.value)
+            updateMainContainerWithError("Error: comment is not defined")
+    }
+
+    /**
+     * Send a POST request to the "/home/resources" endpoint with the form input data as the body
+     * @param event = Submit comment
+     */
+    function sendPostRequest(event) {
+        fetch("/home/resources", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                "currComment": event.target.value,
+                "id": date.getNewDate().date
+            })
+        }).then(function (response) {
+                if (!response.ok)
+                    throw new Error(response.statusText);
+                return response.json();
+            }).catch(function (error) {
+                updateMainContainerWithError(error);
             });
+    }
+
+    /**
+     * Update the main container element with the error message
+     * @param error
+     */
+    function updateMainContainerWithError(error) {
+        document.getElementById("main-container").innerHTML = `<h1 class="text-bg-light">${error}</h1>`;
     }
 
     /**
@@ -139,38 +179,24 @@
      */
     function postData(event) {
         event.preventDefault();
-        // Validation: Make sure the event target has a value property
-        if (!event.target.value)
-            document.getElementById("main-container").innerHTML = `<h1 class="text-bg-light">Error: comment is not defined</h1>`;
-        console.log(event.target.value)
-        fetch("/home/resources", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                "userName": document.getElementById("userName").getAttribute("name"),
-                "currComment": event.target.value,
-                "id": date.getNewDate().date
-            })
-        }).then(function (response) {
-            // If the response is not in the 200 range, it's an error
-            if (!response.ok)
-                throw new Error(response.statusText);
-
-            return response.json();
-        }).catch(function (error) {
-            console.log("2")
-            document.getElementById("main-container").innerHTML = `<h1 class="text-bg-light">${error}</h1>`;
-        });
+        validateFormInput(event);
+        sendPostRequest(event);
     }
 
     /**
-     * Get data of published comments - according to ID media (= the ID is the date)
+     * Validate the date object and update the main container with an error message if necessary
      */
-    function getDataPostedComments() {
-        // Validation: Make sure the date object is defined and has a .date property
-        if (!date.getNewDate().date || !isValidDate(date.getNewDate().date))
-            document.getElementById("main-container").innerHTML = `<h1 class="text-bg-light">Error: date object is not defined or does not have a .date property</h1>`;
+    function validateDateObject(date) {
+        if (!date || !isValidDate(date)) {
+            updateMainContainerWithError("Error: date object is not defined or does not have a .date property")
+        }
+    }
 
+    /**
+     * Send a GET request to the "/home/resources/{date}" endpoint and handle the response
+     */
+    function sendGetRequest() {
+        creatToggle("spinner")
         fetch(`/home/resources/${date.getNewDate().date}`)
             .then(function (response) {
                 if (response.status === 200)
@@ -178,16 +204,25 @@
                 else
                     throw new Error(`code: ${response.code} Msg: ${response.msg}`);
             }).then(function (data) {
-            document.getElementById("comments-data").innerHTML = addCommentsToModal(data);
-            document.querySelectorAll('.to-del').forEach((elem) => {
-                elem.addEventListener("click", delPost);
+                document.getElementById("comments-data").innerHTML = addCommentsToModal(data);
+                document.querySelectorAll('.to-del').forEach((elem) => {
+                    elem.addEventListener("click", delPost);
+                });
+            }).catch(function (error) {
+                updateMainContainerWithError(error);
+            }).finally(() => {
+                creatToggle("spinner")
             });
-        }).catch(function (error) {
-            console.log("3")
-
-            document.getElementById("main-container").innerHTML = `<h1>${error}</h1>`;
-        });
     }
+
+    /**
+     * Get data of published comments - according to ID media (= the ID is the date)
+     */
+    function getDataPostedComments() {
+        validateDateObject(date.getNewDate().date);
+        sendGetRequest();
+    }
+
     /**
      * Delete wanted comment, only the writer has the option to delete his own comment
      * The delete operation will display immediately to the writer
@@ -195,27 +230,29 @@
      */
     function delPost(event) {
         event.preventDefault();
-        clearInterval(intrevalId);              // Initialize 'intrevalId' timer
-        getDataPostedComments()
-        intrevalId = setInterval(getDataPostedComments, 15000);
         const deleteItem = event.target.id.replace("del-", "");
-        console.log(deleteItem)
         // Validation: Make sure deleteItem is a non-empty string
-        if (!deleteItem || typeof deleteItem !== 'string') {
-            document.getElementById("main-container").innerHTML = `<h1 class="text-bg-light">Error: deleteItem must be a non-empty string</h1>`;
-            return;
-        }
+        if (!deleteItem || typeof deleteItem !== 'string')
+            return updateMainContainerWithError("Error: delete Item must be a non-empty string");
+
         fetch(`/home/del/${deleteItem}`, {method: 'DELETE'})
             .then(function (response) {
                 return response.json();
             }).then(function (data) {
             if (data.status >= 400)
                 throw new Error(`Msg: ${data.msg}`);
-            getDataPostedComments()
-        })
-            .catch(function (error) {
-                document.getElementById("main-container").innerHTML = `<h1 class="text-bg-light">${error}</h1>`;
+            refreshComments();
+        }).catch(function (error) {
+                updateMainContainerWithError(error)
             });
+    }
+    /**
+     * clear the interval and fetch the comments again
+     */
+    function refreshComments() {
+        clearInterval(intrevalId);
+        getDataPostedComments();                // Display immediately changes (Deleted...)
+        intrevalId = setInterval(getDataPostedComments, 15000);
     }
     /**
      * Open Modal of clicked media's button - display media :
@@ -257,19 +294,9 @@
      * @returns {string} string HTML modify card images according to received.
      */
     const createHtmlImgInfo = (currData) => {
-
-        let startExpla, endExpla, moreBtn, mediaElem, cardImg;
-        if (currData['explanation'].length > 100) {
-            startExpla = currData['explanation'].split(' ').slice(0, 40).join(' ')
-            endExpla = currData['explanation'].split(' ').slice(40,).join(' ')
-            moreBtn = `${startExpla}<a class="btn btn-link readMore" id="b${currData.date}m">...Read more</a>
-                               <span class="d-none" id="b${currData.date}e"> ${endExpla}</span>
-                               <a class="btn btn-link readLess d-none" id="b${currData.date}l">Read less</a>`
-        } else
-            moreBtn = `${currData['explanation']}`
-        console.log("im here")
-
-        mediaElem = getMediaType(currData, "max-height: 300px; min-height: 300px;")
+        let moreBtn, mediaElem, cardImg;
+        moreBtn = createReadMoreButton(currData);
+        mediaElem = getMediaType(currData, "max-height: 300px; min-height: 300px;");
         //cop = copyrights
         let cop = 'Unknown'
         if (currData['copyright'])
@@ -278,6 +305,27 @@
         cardImg = createHtmlCard(currData, moreBtn, mediaElem, cop)
         return cardImg;
     }
+
+    /**
+     * Create the HTML for the "Read more/less" button
+     * @param currData
+     * @returns {string}
+     */
+    const createReadMoreButton = (currData) => {
+        let startExpla, endExpla, moreBtn;
+        if (currData['explanation'].length > 100) {
+            startExpla = currData['explanation'].split(' ').slice(0, 40).join(' ');
+            endExpla = currData['explanation'].split(' ').slice(40,).join(' ');
+            moreBtn = `${startExpla}<a class="btn btn-link readMore" id="b${currData.date}m">...Read more</a>
+                               <span class="d-none" id="b${currData.date}e"> ${endExpla}</span>
+                               <a class="btn btn-link readLess d-none" id="b${currData.date}l">Read less</a>`;
+        } else {
+            moreBtn = `${currData['explanation']}`;
+        }
+        return moreBtn;
+    }
+
+
     /**
      * Create card of media, modify it and return the element HTML string.
      * @param currData = data of specific day
@@ -315,7 +363,6 @@
                 setReadBtn(elm.target["id"], 'm', 'l', 'e')
             })
         })
-
         document.querySelectorAll(".readLess").forEach((item) => {
             item.addEventListener("click", (elm) => {
                 setReadBtn(elm.target["id"], 'l', 'm', 'e')
@@ -332,10 +379,10 @@
      */
     const getDataImgModal = (elem) => {
         document.getElementById("comments-data").innerHTML = '';
-
+        //if (!validateDateObject(elem.target.id))
         // Validation: Make sure date is correct
         if (!elem.target || !isValidDate(elem.target.id))
-            document.getElementById("main-container").innerHTML = `<h1 class="text-bg-light">Error: Date is not defined</h1>`;
+            updateMainContainerWithError("Error: Date is not defined");
 
         fetch(`${APIURL}?api_key=${APIKEY}&date=${elem.target.id}`)
             .then(function (response) {
@@ -348,16 +395,13 @@
                 openModal(data);
                 getDataPostedComments();           // Get Published comments of specific clicked media
                 if (intrevalId)                    // Timer of 15 seconds, clear and start over when reach to 15 seconds
-                    clearInterval(intrevalId);     // Initialize timer
+                    clearInterval(intrevalId);     // Only initialize timer
                 intrevalId = setInterval(getDataPostedComments, 15000);  // Refresh comments every 15 seconds
             })
-            .catch(function (error) {              //
-                console.log("4")
-
-                document.getElementById("main-container").innerHTML = `<h1 class="text-bg-light">${error}</h1>`;
+            .catch(function (error) {
+                updateMainContainerWithError(error);
             });
     };
-
 
     /**
      * Modify the submitted comment and add it
@@ -390,6 +434,7 @@
     const creatToggle = (elmId) => {
         document.getElementById(elmId).classList.toggle("d-none")
     }
+
     /**
      * Validate date
      * @param dateString = date to check if valid
@@ -399,6 +444,7 @@
         const date = new Date(dateString);
         return !isNaN(date.valueOf());
     }
+
     /**
      * Get type of specific media - if it's an image or an iframe video
      * @param currData = data of specific day

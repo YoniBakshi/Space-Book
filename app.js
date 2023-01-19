@@ -7,6 +7,8 @@ let loginRouter = require('./routes/login');
 let registerRouter = require('./routes/users');
 let homeRouter = require('./routes/home');
 let session = require('express-session')
+const Sequelize = require('sequelize')
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 let app = express();
 
@@ -20,13 +22,26 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Enable sessions
+// enable database session store
+const sequelize = new Sequelize({
+    "dialect": "sqlite",
+    "storage": "./session.sqlite"
+});
+
+const myStore = new SequelizeStore({
+    db: sequelize
+})
+
+// enable sessions
 app.use(session({
-    secret: "someSecretKey",
-    resave: false,      // Force save of session for each request
-    saveUninitialized: false,  // Save a session that is new, but has not been modified
-//    cookie: {maxAge: 10 * 10 * 100}
-}))
+    secret:"somesecretkey",
+    store:myStore,
+    resave: false, // Force save of session for each request
+    saveUninitialized: false, // Save a session that is new, but has not been modified
+    cookie: {maxAge: 10601000 } // milliseconds!
+}));
+
+myStore.sync();
 
 // Middleware
 app.use(function (req, res, next) {
@@ -66,7 +81,7 @@ app.use(function (req, res, next) {
     next(createError(404));
 });
 
-// Error handler
+// Error handler - Middleware               // TODO
 app.use(function (err, req, res, next) {
     // Set locals, only providing error in development
     res.locals.message = err.message;
@@ -76,4 +91,5 @@ app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.render('error');
 });
+
 module.exports = app;
