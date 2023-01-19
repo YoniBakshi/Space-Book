@@ -9,39 +9,57 @@
 
         <!-- Top Title Login Page -->
         <%- include('includes/topForm.ejs') %>
+        <div class="row g-0">
+            <div class="col">
+                <div class="loginBox" id="loginBox">
+                    <img class="user" src="./images/LoginIcon.png" height="250px" width="250px" alt="#">
+                    <h3>Welcome traveler! <br> Sign in here</h3>
 
-        <div class="row d-flex justify-content-center">
-            <div class="col-md-8">
-                <form class="form-floating" action="/" method="POST">
+                    <form class="form-floating" id="user-name-input" action="/" method="POST">
+                        <div class="inputBox">
+                            <!-- Email login input -->
+                            <div class=" form-floating mb-4">
+                                <input class="form-control" type="email" id="emailLogin" name="emailLogin"
+                                       placeholder="Email Address" minlength="3" maxlength="32" required>
+                                <label for="floatingInputValue" class="text-white">Email Address</label>
+                            </div>
 
-                    <!-- Email login input -->
-                    <div class=" form-floating mb-4">
-                        <input type="email" id="emailLogin" name="emailLogin" class="form-control"
-                               placeholder="Email Address" minlength="3" maxlength="32" required>
-                        <label for="floatingInputValue">Email Address</label>
-                    </div>
-
-                    <!-- Password login input -->
-                    <div class="form-floating mb-4">
-                        <input type="password" id="passwordLogin" name="passwordLogin" class="form-control"
-                               placeholder="Password" minlength="3" maxlength="32" required>
-                        <label for="floatingInputValue">Password</label>
-                    </div>
-
-                    <div class="row d-flex justify-content-center mx-auto">
-                        <!-- Submit - Login button -->
-                        <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
-
-                        <!-- Move to Registration Form button -->
-                        <div class="text-center fw-4">
-                            <p>Need to <a href="/users/register">Register?</a></p>
+                            <!-- Password login input -->
+                            <div class="form-floating mb-4">
+                                <input class="form-control" type="password" id="passwordLogin" name="passwordLogin"
+                                       placeholder="Password" minlength="3" maxlength="32" required>
+                                <label for="floatingInputValue" class="text-white">Password</label>
+                            </div>
                         </div>
-                    </div>
+                        <div class="row d-flex justify-content-center mx-auto">
+                            <!-- Submit - Login button -->
+                            <button type="submit" id="login" class="btn btn-primary btn-block mb-4" value="Login">Sign
+                                in
+                            </button>
 
-                </form>
+                            <!-- Move to Registration Form button -->
+                            <div class="text-center fw-4">
+                                <p>Need to <a href="/users/register">Register?</a></p>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
             </div>
-        </div>
+            <!--        <div class="loginBox"> <img class="user" src="https://i.ibb.co/yVGxFPR/2.png" height="100px" width="100px">
+                        <h3>Sign in here</h3>
+                        <form action="login.php" method="post">
+                            <div class="inputBox">
+                                <input id="uname" type="text" name="Username" placeholder="Username">
+                                <input id="pass" type="password" name="Password" placeholder="Password">
+                            </div> <input type="submit" name="" value="Login">
+                        </form>
+                        <a href="#">Forget Password<br> </a>
+                        <div class="text-center">
+                            <p style="color: #59238F;">Sign-Up</p>
+                        </div>-->
 
+        </div>
     </div>
 </main>
 <%- include('includes/end.ejs') %>
