@@ -1,47 +1,51 @@
 const db = require('../models')
+const MyError = require("../utils/utils");
 
 // Next was clicked - load the next pagee which is register password
 exports.getRegisterPassword = (req, res, next) => {
     //TODO validation
-    if (!req.cookies.registerData) {
-        res.cookie("error", "The time has expired basuhsh");
-        return res.redirect('/users/register');
-    }
+    //to block access to register password page
+    if (!req.cookies.registerData)
+        res.redirect('/users/register')
 
     res.render('register-password', {
-        title: 'register-password'
+        titlePage: 'register-password',
+        msgP1: 'Please choose a password',
+        msgP2:'Register',
+        message:req.cookies.message
     });
 }
 
 exports.postRegisterPassword = async (req, res, next) => {
     try {
-        //check if the cookie exist
-        const dataCookie = req.cookies.registerData;
-        //if it's not already exist return error
-        if (!dataCookie) {
-            res.cookie("error", "The time has expired");
-            return res.redirect('/users/register');
-        }
-        //check if the entered email is caught
-        const existingUser = await db.User.findOne({ where: { email: dataCookie.userEmail } });
-        //if it's already exist return error
-        if (existingUser) {
-            res.cookie("error", "The email is already exist 2, FASTER NEXT TIME DUDE");
-            return res.redirect('/users/register');
-        }
-        const { userEmail: email, userFirstName: firstName, userLastName: lastName } = dataCookie;
-        const password = req.body.passwordRegister;
-        //create a row in the table
-        await db.User.create({ email, firstName, lastName, password });
+        if (!req.cookies.registerData)  //check if the cookie exist
+            throw new MyError(`Registration process expired, Please start again.`,`/users/register`);
 
-        //to debug
-/*        const users = await db.User.findAll();
-        console.log(users);*/
-        //if succeed go back to login
+        if (await db.User.findOne({ where: {email: req.cookies.registerData.userEmail}})) //check if the entered email is caught
+            throw new MyError(`The email is already in use, please choose other one.`,`/users/register`);
+
+        const { userEmail: email, userFirstName: firstName, userLastName: lastName } = req.cookies.registerData;
+        const password = req.body.passwordRegister;
+
+        if(password !== req.body.passwordConfirm) //password validation
+            throw new MyError(`Passwords do not match, please try again.`,`/users/register-password`);
+
+        await db.User.create({ email, firstName, lastName, password }); //if succeed go back to login
+        res.clearCookie("registerData");
+        res.cookie("message", "Registration successful, you can login now.");
         return res.redirect('/');
+
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Error occured');
+        if(error instanceof MyError) {
+            res.cookie("message", error.message);
+            return res.redirect(error.redirect);
+        }
+        res.status(500).send('Error occurred');
     }
 }
 
+
+
+//to debug
+/*        const users = await db.User.findAll();
+        console.log(users);*/

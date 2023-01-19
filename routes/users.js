@@ -6,7 +6,7 @@ const registerPassController = require("../controllers/register-password");
 let router = express.Router();
 
 /* Middleware of errors */
-router.use(registerController.header);
+//router.use(registerController.header);
 
 /* /register => GET users listing. */
 router.get('/register', registerController.getRegister)
