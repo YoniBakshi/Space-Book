@@ -40,13 +40,7 @@ exports.postLogin = async (req, res, next) => {
 
         res.redirect('/')
     } catch (error) {
-        if (error instanceof MyError) {
-            res.cookie("message", error.message);
-            return res.redirect(error.redirect);
-        }
-        console.log(error)
-
-        res.status(500).send('Error occurred');
+        MyError.handleError(error, res);
     }
 }
 

@@ -1,6 +1,6 @@
 //const Cookies = require('cookies')
 const db = require('../models')
-
+const MyError = require('../utils/utils')
 /**
  * Register button was clicked or time expired /
  * @param req
@@ -40,7 +40,6 @@ exports.postRegister = async (req, res, next) => {
         }
         res.redirect('/users/register-password');
     } catch(err) {
-        console.log(err);
         res.cookie("message", "Error Occured, Please try again later");
         return res.redirect('/users/register');
     }

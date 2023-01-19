@@ -41,7 +41,7 @@ exports.postHome = async (req, res) => {
         await db.Comment.create({userEmail, comment, imgId, status});
 
     } catch (error) {
-        handleError(error, res); //KAPARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        MyError.handleError(error, res); //KAPARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
     }
 }
@@ -79,7 +79,6 @@ function checkIfValidDate(theDate, res) {
     }
 }
 
-
 /**
  *
  * @param req
@@ -94,7 +93,7 @@ exports.getComments = async (req, res, next) => {
         const result = await getCommentDetails(commentList, req.session.email);
         res.status(200).json(result);
     } catch (error) {
-        handleError(error, res);
+        MyError.handleError(error, res);
     }
 }
 
@@ -134,13 +133,13 @@ const getCommentDetails = async (commentList, userEmail) => {
  * @param error.message - Contain the error message
  * @param error.redirect - Contain the wanted path to be loaded
  */
-const handleError = (error, res) => {
-    if(error instanceof MyError) {
-        res.cookie("message", error.message);
-        return res.redirect(error.redirect);
-    }
-    res.status(500).send('Error occurred');
-}
+// const handleError = (error, res) => {
+//     if(error instanceof MyError) {
+//         res.cookie("message", error.message);
+//         return res.redirect(error.redirect);
+//     }
+//     res.status(500).send('Error occurred');
+// }
 
 /**
  * HELLO I DELETE COMMENTS YA
@@ -153,6 +152,6 @@ exports.deleteComment = async (req, res) => {
         // Return a success response
         res.status(200).json({msg: "Success"});
     } catch (error) {
-        handleError(error, res);
+        MyError.handleError(error, res);
     }
 }

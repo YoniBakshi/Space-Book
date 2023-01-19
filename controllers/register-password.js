@@ -38,15 +38,6 @@ exports.postRegisterPassword = async (req, res, next) => {
         return res.redirect('/');
 
     } catch (error) {
-        if (error instanceof MyError) {
-            res.cookie("message", error.message);
-            return res.redirect(error.redirect);
-        }
-        res.status(500).send('Error occurred');
+        MyError.handleError(error, res);
     }
 }
-
-
-//to debug
-/*        const users = await db.User.findAll();
-        console.log(users);*/
