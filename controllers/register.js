@@ -18,6 +18,7 @@ exports.getRegister = (req, res, next) =>{
         titlePage: 'register',
         msgP1: 'Please Register',
         msgP2:'Register',
+        backgroundImage: 'LoginBackground.png',
         message:req.cookies.message,
         registerData});
 }
@@ -34,13 +35,15 @@ exports.postRegister = async (req, res, next) => {
         res.cookie("registerData", {userFirstName, userLastName, userEmail} , {maxAge : 30 * 10 * 100, httpOnly : true});
 
         const existingUser = await db.User.findOne({ where: { email: userEmail } });
-        if (existingUser) {
-            res.cookie("message", "The email is already in use, please choose other one.");
-            return res.redirect('/users/register');
-        }
+        if (existingUser)
+            throw new MyError(`The email is already in use, please choose other one.`, `/users/register`);
+
         res.redirect('/users/register-password');
-    } catch(err) {
-        res.cookie("message", "Error Occured, Please try again later");
-        return res.redirect('/users/register');
+    } catch(error) {
+        if(error instanceof MyError) {
+            res.cookie("message", error.message);
+            return res.redirect(error.redirect);
+        }
+        res.status(500).send('Error occurred');
     }
 }

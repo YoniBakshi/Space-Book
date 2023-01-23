@@ -1,11 +1,9 @@
 body {
     margin: 0;
     padding: 0;
-    background: url("../images/GalaxyBackground.png") repeat center;
     height: 100vh;
     font-family: sans-serif;
     background-size: cover;
-    overflow: hidden
 }
 
 @media screen {
@@ -19,28 +17,29 @@ body {
 
 .loginBox {
     position: absolute;
-    top: 50%;
+    top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 900px;
     min-height: 200px;
-    background: rgba(0, 0, 0, 0.79);
+    background: rgba(0, 0, 0, 0.6);
     border-radius: 10px;
-    padding: 40px;
+    padding: 30px;
     box-sizing: border-box;
 }
 
 .user {
     margin: 0 auto;
     display: block;
-    margin-bottom: 20px
+    margin-bottom: 20px;
 }
 
 h3 {
     margin: 0;
     padding: 0 0 20px;
-    color: #59238F;
-    text-align: center
+    color: rgba(103, 103, 224, 0.91);
+    text-align: center;
+
 }
 
 .loginBox input {
@@ -52,10 +51,10 @@ h3 {
     border: none;
     border-bottom: 2px solid #fff;
     outline: none;
-    height: 40px;
+    height: 70px;
     color: #fff;
     background: transparent;
-    font-size: 16px;
+    font-size: 18px;
     padding-left: 20px;
     box-sizing: border-box
 }
@@ -93,7 +92,7 @@ h3 {
 }
 
 .loginBox a {
-    color: #262626;
+    color: rgb(255, 255, 255);
     font-size: 14px;
     font-weight: bold;
     text-decoration: none;
@@ -106,5 +105,5 @@ a:hover {
 }
 
 p {
-    color: #0000ff
+    color: rgba(103, 103, 224, 0.94)
 }

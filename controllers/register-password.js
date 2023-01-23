@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 // Next was clicked - load the next pagee which is register password
-exports.getRegisterPassword = (req, res, next) => {
+exports.getRegisterPassword = (req, res) => {
     //TODO validation
     //to block access to register password page
     if (!req.cookies.registerData)
@@ -14,6 +14,7 @@ exports.getRegisterPassword = (req, res, next) => {
         titlePage: 'register-password',
         msgP1: 'Please choose a password',
         msgP2: 'Register',
+        backgroundImage: 'LoginBackground.png',
         message: req.cookies.message
     });
 }
@@ -38,6 +39,11 @@ exports.postRegisterPassword = async (req, res, next) => {
         return res.redirect('/');
 
     } catch (error) {
-        MyError.handleError(error, res);
+        if(error instanceof MyError) {
+            res.cookie("message", error.message);
+            return res.redirect(error.redirect);
+        }
+        res.status(500).send('Error occurred');
+        //MyError.handleError(error, res);
     }
 }

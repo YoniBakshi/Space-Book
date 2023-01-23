@@ -1,8 +1,9 @@
 const db = require("../models");
 const MyError = require("../utils/utils");
 const bcrypt = require('bcrypt');
+const createError = require("http-errors");
 
-exports.getLogin = (req, res, next) => {
+exports.getLogin = (req, res) => {
     console.log("login get")
     if (req.session.connection) {
         res.redirect('/home')
@@ -10,21 +11,24 @@ exports.getLogin = (req, res, next) => {
         //TODO validation
         res.render('login', {
             titlePage: 'login',
-            msgP1: 'Please Sign-In',
-            msgP2: 'Exercise 6 (Part 1)',
+            msgP1: '',
+            msgP2: '',
+            //  msgP1: 'Please Sign-In',
+            //  msgP2: 'Exercise 6 (Part 1)',
+            backgroundImage: 'LoginBackground.png',
             message: req.cookies.message
         });
     }
 }
-exports.getLoguot = (req, res, next) => {
+exports.getLoguot = (req, res) => {
     console.log("login get")
     if (req.session.connection)
-       delete req.session.connection
+        delete req.session.connection
 
     res.redirect('/')
 }
 
-exports.postLogin = async (req, res, next) => {
+exports.postLogin = async (req, res,next) => {
     /////////  Just started - only loads without doing anything   /////////
     try {
         const validUser = await db.User.findOne({where: {email: req.body.emailLogin}})
@@ -40,7 +44,12 @@ exports.postLogin = async (req, res, next) => {
 
         res.redirect('/')
     } catch (error) {
-        MyError.handleError(error, res);
+        if(error instanceof MyError) {
+            res.cookie("message", error.message);
+            return res.redirect(error.redirect);
+        }
+        res.status(500).send('Error occurred');
+        //MyError.handleError(error, res)
     }
 }
 

@@ -56,12 +56,12 @@ app.use(function (req, res, next) {
 
 // Middleware function to check for session
 app.use(function(req, res, next) {
-  if (!req.session.connection && (req.url !== '/' && req.url !== '/users/register'
-      && req.url !== '/users/register-password')) {
-    res.redirect('/');
-  } else/* if(req.session.connection)
+    if (!req.session.connection && (req.url !== '/' && req.url !== '/users/register'
+        && req.url !== '/users/register-password')) {
+        res.redirect('/');
+    } else/* if(req.session.connection)
       res.redirect('/')*/
-    next();
+        next();
 });
 app.use(function(req, res, next) {
     if (req.session.connection && (req.url === '/' || req.url === '/users/register')) {

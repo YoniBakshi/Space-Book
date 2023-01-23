@@ -29,9 +29,9 @@
         <div id="imgCard">
 
         </div>
-        <div class="d-flex align-items-center d-none" id="spinner-img">
+        <div class="d-flex align-items-center text-light d-none" id="spinner-img">
             <strong>Loading...</strong>
-            <div class="spinner-grow ms-auto" role="status" aria-hidden="true"></div>
+            <div class="spinner-grow text-light ms-auto" role="status" aria-hidden="true"></div>
         </div>
 
         <!-- Modal Of Clicked Image -->
@@ -51,6 +51,10 @@
                     <!-- Data of Card Image : Media (Image/Video), Explanation, Comments, Add Comment -->
                     <div class="modal-body">
                         <div class="row">
+                            <div class="d-flex align-items-center text-black d-none" id="spinner-modal">
+                                <strong>Loading...</strong>
+                                <div class="spinner-grow text-black ms-auto" role="status" aria-hidden="true"></div>
+                            </div>
                             <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12">
                                 <div id="media-type"></div>
                                 <br><br>
@@ -71,9 +75,9 @@
                                                 </form>
                                                 <!-- Published Comments -->
                                                 <div id="comments-data"></div>
-                                                <div class="d-flex align-items-center d-none" id="spinner">
+                                                <div class="d-flex align-items-center text-black d-none" id="spinner-comments">  <!-- -comments-->
                                                     <strong>Loading...</strong>
-                                                    <div class="spinner-grow ms-auto" role="status" aria-hidden="true"></div>
+                                                    <div class="spinner-grow text-black ms-auto" role="status" aria-hidden="true"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -87,6 +91,7 @@
         </div>
     </div>
 </div>
+<div class="container-fluid text-center py-5 d-none" id="err"></div>
 
 
 <script src="../javascript/funcs.js"></script>

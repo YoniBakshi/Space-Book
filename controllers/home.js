@@ -1,5 +1,6 @@
 const db = require("../models");
 const MyError = require("../utils/utils");
+const createError = require("http-errors");
 
 /**
  * This function is responsible for rendering the homePage view and providing
@@ -8,10 +9,11 @@ const MyError = require("../utils/utils");
  * @param res - response object used to send response to the client
  */
 exports.getHome = (req, res) => {
-        res.render('homePage', {
-            titlePage: 'NASA',
-            userFullName: req.session.userFullName
-        });
+    res.render('homePage', {
+        titlePage: 'NASA',
+        userFullName: req.session.userFullName,
+        backgroundImage: 'FeedBackground.png',
+    });
 }
 
 /**
@@ -20,7 +22,7 @@ exports.getHome = (req, res) => {
  * @param res
  * @returns {Promise<*>}
  */
-exports.postHome = async (req, res) => {
+exports.postHome = async (req, res,next) => {
     try {
         // Retrieve comment, image ID, and user email from request body
         const comment = req.body.currComment;
@@ -41,8 +43,7 @@ exports.postHome = async (req, res) => {
         await db.Comment.create({userEmail, comment, imgId, status});
 
     } catch (error) {
-        MyError.handleError(error, res); //KAPARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-
+        return res.status(400).json({ message: error.message });
     }
 }
 
@@ -64,19 +65,16 @@ function validateRequestBody(userEmail, imgId, comment, res) {
  * @param variableName - The name of the variable inside the database
  */
 function checkIfString(userInfo, variableName, res) {
-    if (typeof userInfo !== 'string') {
-        return res.status(400).json({ message: `${variableName} must be a string` });
-    }
-}
+    if (typeof userInfo !== 'string')
+        throw new Error(`${variableName} must be a string` )}
 
 /**
  * Check if variable is a valid date
  * @param theDate - The date to be validated
  */
 function checkIfValidDate(theDate, res) {
-    if (!Date.parse(theDate)) {
-        return res.status(400).json({ message: 'id must be a valid date' });
-    }
+    if (!Date.parse(theDate))
+        throw new Error(`id must be a valid date` )
 }
 
 /**
@@ -88,58 +86,43 @@ function checkIfValidDate(theDate, res) {
  */
 exports.getComments = async (req, res, next) => {
     try {
-        const resourceId = req.params.id;
-        const commentList = await getCommentList(resourceId);
+        checkIfValidDate(req.params.id)
+        const commentList = await getCommentList(req.params.id);
         const result = await getCommentDetails(commentList, req.session.email);
         res.status(200).json(result);
     } catch (error) {
-        MyError.handleError(error, res);
+        return res.status(400).json({ message: error.message });
     }
 }
 
-/**
- * Retrieves a list of comments for a given image ID
- * @param resourceId
- * @returns {Promise<*>}
- */
 const getCommentList = async (resourceId) => {
-    return await db.Comment.findAll({ where: {imgId: resourceId}});
-}
-
-/**
- * Retrieves additional details for each comment in the list
- * @param commentList
- * @param userEmail
- * @returns {Promise<Array>}
- */
-const getCommentDetails = async (commentList, userEmail) => {
-    const result = [];
-    for (const item of commentList) {
-        const userOwner = await db.User.findOne({where: {email: item.dataValues.userEmail}})
-        if(!item.dataValues.status){
-            const firstName = userOwner.dataValues.firstName
-            const lastName = userOwner.dataValues.lastName
-            const commentId = item.dataValues.id
-            const comment = item.dataValues.comment
-            const owner = userEmail === userOwner.dataValues.email
-            result.push({firstName, lastName, owner, commentId, comment})
-        }
+    try{
+        return await db.Comment.findAll({ where: {imgId: resourceId}});
+    } catch(error){
+        throw new Error(error.message)
     }
-    return result;
 }
 
-/**
- * Handles any errors that occur in the getComments function
- * @param error.message - Contain the error message
- * @param error.redirect - Contain the wanted path to be loaded
- */
-// const handleError = (error, res) => {
-//     if(error instanceof MyError) {
-//         res.cookie("message", error.message);
-//         return res.redirect(error.redirect);
-//     }
-//     res.status(500).send('Error occurred');
-// }
+const getCommentDetails = async (commentList, userEmail) => {
+    try{
+        const result = [];
+        for (const item of commentList) {
+            const userOwner = await db.User.findOne({where: {email: item.dataValues.userEmail}})
+            if(!item.dataValues.status){
+                const firstName = userOwner.dataValues.firstName
+                const lastName = userOwner.dataValues.lastName
+                const commentId = item.dataValues.id
+                const comment = item.dataValues.comment
+                const owner = userEmail === userOwner.dataValues.email
+                result.push({firstName, lastName, owner, commentId, comment})
+            }
+        }
+        return result;
+    }catch(error){
+        throw new Error(error.message)
+    }
+}
+
 
 /**
  * HELLO I DELETE COMMENTS YA
@@ -150,8 +133,8 @@ exports.deleteComment = async (req, res) => {
         const resourceId = Number(req.params.id);
         await db.Comment.update({status: true}, {where: {id: resourceId}});
         // Return a success response
-        res.status(200).json({msg: "Success"});
+        res.status(200).json({message: "Success"});
     } catch (error) {
-        MyError.handleError(error, res);
+        res.status(400).json({ message: error.message });
     }
 }

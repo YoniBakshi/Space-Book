@@ -2,13 +2,33 @@
 
 (function () {
     const APIURL = 'https://api.nasa.gov/planetary/apod';
-    const APIKEY = '4Y3Sd7QzaQF3QK1eomVPaMgysACy1D2FKIgFfyeh';
+    const APIKEY = 'bSGWMXT6SYcW828JaN298lSZgoQCmfREsCZZrgcE';
 
     document.addEventListener("DOMContentLoaded", function () {
         // At first, default date is set up to date - display NASA's daily media of last 3 days.
         date.initDate()
         getDataFromNASA()
+        let imagesLoaded = 0;
 
+        /*        document.addEventListener("scroll", () => {
+                    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight-1) {
+                        console.log(imagesLoaded)
+                        if (imagesLoaded % 2 === 0) {
+                            let currDate = new Date(date.getNewDate().start);
+                            currDate.setDate(currDate.getDate() - 1);
+                            date.updateDate(currDate);
+                        }
+                        imagesLoaded++;
+                    }
+                });*/
+
+        document.addEventListener("scroll", () => {
+            if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 1) {
+                let currDate = new Date(date.getNewDate().start)
+                currDate.setDate(currDate.getDate() - 1);
+                date.updateDate(currDate)
+            }
+        })
         //get a picked date
         document.getElementById("currentDate").addEventListener("change", (event) => {
             //clear image card
@@ -30,13 +50,7 @@
                 getDataPostedComments(elm)
         });
         // Infinite scroll - loading 3 pictures every time
-        document.addEventListener("scroll", () => {
-            if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 1) {
-                let currDate = new Date(date.getNewDate().start)
-                currDate.setDate(currDate.getDate() - 1);
-                date.updateDate(currDate)
-            }
-        })
+
     });
 
     /**
@@ -114,10 +128,9 @@
     function getDataFromNASA() {
         // Validation: Make sure date is correct
         if (!isValidDate(date.getNewDate().end) || !isValidDate(date.getNewDate().start))
-            updateMainContainerWithError("Error : Date is not defined11");
-        creatToggle("spinner-img")
+            updateMainContainerWithError("Error : Date is not defined");
+        createToggle("spinner-img")
 
-        //document.getElementById("spinner").innerHTML += ''
         fetch(`${APIURL}?api_key=${APIKEY}&start_date=${date.getNewDate().start}&end_date=${date.getNewDate().end}`)
             .then(function (response) {
                 return response.json();
@@ -130,7 +143,7 @@
             .catch(function (error) {                       // NASA's error message
                 updateMainContainerWithError(error)
             }).finally(() => {
-            creatToggle("spinner-img")
+            createToggle("spinner-img")
         })
     }
 
@@ -156,12 +169,16 @@
                 "id": date.getNewDate().date
             })
         }).then(function (response) {
-                if (!response.ok)
-                    throw new Error(response.statusText);
-                return response.json();
-            }).catch(function (error) {
-                updateMainContainerWithError(error);
-            });
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.message);
+                });
+            }
+            return response.json();
+        }).catch(function (error) {
+            console.log(error)
+            updateMainContainerWithError(error.message);
+        });
     }
 
     /**
@@ -169,7 +186,10 @@
      * @param error
      */
     function updateMainContainerWithError(error) {
-        document.getElementById("main-container").innerHTML = `<h1 class="text-bg-light">${error}</h1>`;
+        console.log(error)
+        createToggle("main-container")
+        createToggle("err")
+        document.getElementById("err").innerHTML = `<h1 class="text-bg-light">${error}</h1>`;
     }
 
     /**
@@ -196,23 +216,25 @@
      * Send a GET request to the "/home/resources/{date}" endpoint and handle the response
      */
     function sendGetRequest() {
-        creatToggle("spinner")
+        createToggle("spinner-comments")
         fetch(`/home/resources/${date.getNewDate().date}`)
             .then(function (response) {
-                if (response.status === 200)
-                    return response.json();
-                else
-                    throw new Error(`code: ${response.code} Msg: ${response.msg}`);
+                if (response.status !== 200)
+                    return response.json().then(err => {
+                        throw new Error(`code: ${response.status} Msg: ${err.message}`);
+                    });
+                return response.json();
             }).then(function (data) {
-                document.getElementById("comments-data").innerHTML = addCommentsToModal(data);
-                document.querySelectorAll('.to-del').forEach((elem) => {
-                    elem.addEventListener("click", delPost);
-                });
-            }).catch(function (error) {
-                updateMainContainerWithError(error);
-            }).finally(() => {
-                creatToggle("spinner")
+            document.getElementById("comments-data").innerHTML = addCommentsToModal(data);
+            document.querySelectorAll('.to-del').forEach((elem) => {
+                elem.addEventListener("click", delPost);
             });
+        }).catch(function (error) {
+            console.log(error)
+            updateMainContainerWithError(error);
+        }).finally(() => {
+            createToggle("spinner-comments")
+        });
     }
 
     /**
@@ -237,15 +259,16 @@
 
         fetch(`/home/del/${deleteItem}`, {method: 'DELETE'})
             .then(function (response) {
-                return response.json();
-            }).then(function (data) {
-            if (data.status >= 400)
-                throw new Error(`Msg: ${data.msg}`);
-            refreshComments();
-        }).catch(function (error) {
-                updateMainContainerWithError(error)
-            });
+                if (response.status !== 200)
+                    return response.json().then(err => {
+                        throw new Error(`code: ${response.status} Msg: ${err.message}`);
+                    });
+                refreshComments();
+            }).catch(function (error) {
+            updateMainContainerWithError(error)
+        });
     }
+
     /**
      * clear the interval and fetch the comments again
      */
@@ -254,6 +277,7 @@
         getDataPostedComments();                // Display immediately changes (Deleted...)
         intrevalId = setInterval(getDataPostedComments, 15000);
     }
+
     /**
      * Open Modal of clicked media's button - display media :
      * explanation, date, published comments & option to add comment
@@ -379,11 +403,11 @@
      */
     const getDataImgModal = (elem) => {
         document.getElementById("comments-data").innerHTML = '';
-        //if (!validateDateObject(elem.target.id))
+
         // Validation: Make sure date is correct
         if (!elem.target || !isValidDate(elem.target.id))
             updateMainContainerWithError("Error: Date is not defined");
-
+        createToggle('spinner-modal');
         fetch(`${APIURL}?api_key=${APIKEY}&date=${elem.target.id}`)
             .then(function (response) {
                 // If the response is not in the 200 range, it's an error
@@ -400,7 +424,10 @@
             })
             .catch(function (error) {
                 updateMainContainerWithError(error);
-            });
+            }).finally(() => {
+            createToggle("spinner-modal")
+        })
+
     };
 
     /**
@@ -412,7 +439,7 @@
         let commentInfo = ``;
         data.forEach(function (item) {
             let delLink = item.owner ?
-                ` <a class="btn btn-link mr-2 to-del" href="del/${item.commentId}" id="del-${item.commentId}">delete</a>` : ``
+                ` <a class="btn btn-link mr-2 to-del"  id="del-${item.commentId}">delete</a>` : ``
             commentInfo +=
                 `<div class="card mb-4">
                         <div class="card-body">
@@ -431,7 +458,7 @@
      * Toggle element
      * @param elmId = id of element to toggle
      */
-    const creatToggle = (elmId) => {
+    const createToggle = (elmId) => {
         document.getElementById(elmId).classList.toggle("d-none")
     }
 
@@ -475,9 +502,9 @@
      * @param c3 = change to
      */
     const setReadBtn = (id, c1, c2, c3) => {
-        creatToggle(`${id}`)
-        creatToggle(`${id.replace(c1, c2)}`)
-        creatToggle(`${id.replace(c1, c3)}`)
+        createToggle(`${id}`)
+        createToggle(`${id.replace(c1, c2)}`)
+        createToggle(`${id.replace(c1, c3)}`)
     }
     /**
      * Validate comment input - length must be between 1-128.

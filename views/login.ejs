@@ -12,9 +12,9 @@
         <div class="row g-0">
             <div class="col">
                 <div class="loginBox" id="loginBox">
-                    <img class="user" src="./images/LoginIcon.png" height="250px" width="250px" alt="#">
-                    <h3>Welcome traveler! <br> Sign in here</h3>
-
+                    <img class="user" src="./images/LoginIcon.png" height="280px" width="280px" alt="#">
+                    <h3>Welcome traveler! <br> Sign in here please</h3>
+                    <%- include('includes/topForm.ejs') %>
                     <form class="form-floating" id="user-name-input" action="/" method="POST">
                         <div class="inputBox">
                             <!-- Email login input -->
@@ -33,7 +33,7 @@
                         </div>
                         <div class="row d-flex justify-content-center mx-auto">
                             <!-- Submit - Login button -->
-                            <button type="submit" id="login" class="btn btn-primary btn-block mb-4" value="Login">Sign
+                            <button type="submit" id="login" class="btn btn-light btn-block mb-4" value="Login">Sign
                                 in
                             </button>
 
@@ -46,18 +46,6 @@
                     </form>
                 </div>
             </div>
-            <!--        <div class="loginBox"> <img class="user" src="https://i.ibb.co/yVGxFPR/2.png" height="100px" width="100px">
-                        <h3>Sign in here</h3>
-                        <form action="login.php" method="post">
-                            <div class="inputBox">
-                                <input id="uname" type="text" name="Username" placeholder="Username">
-                                <input id="pass" type="password" name="Password" placeholder="Password">
-                            </div> <input type="submit" name="" value="Login">
-                        </form>
-                        <a href="#">Forget Password<br> </a>
-                        <div class="text-center">
-                            <p style="color: #59238F;">Sign-Up</p>
-                        </div>-->
 
         </div>
     </div>

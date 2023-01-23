@@ -6,6 +6,11 @@ module.exports = class MyError extends Error {
     }
 }
 
+/**
+ * Handles any errors that occur in the getComments function
+ * @param error.message - Contain the error message
+ * @param error.redirect - Contain the wanted path to be loaded
+ */
 exports.handleError = (error, res) => {
     if(error instanceof MyError) {
         res.cookie("message", error.message);
