@@ -349,7 +349,6 @@
         return moreBtn;
     }
 
-
     /**
      * Create card of media, modify it and return the element HTML string.
      * @param currData = data of specific day

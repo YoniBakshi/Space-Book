@@ -40,7 +40,8 @@ exports.postHome = async (req, res,next) => {
         checkIfString(comment, 'comment', res);
 
         // Create new comment
-        await db.Comment.create({userEmail, comment, imgId, status});
+        const c = await db.Comment.create({userEmail, comment, imgId, status});
+        return res.json(c);
 
     } catch (error) {
         return res.status(400).json({ message: error.message });
@@ -87,21 +88,21 @@ function checkIfValidDate(theDate, res) {
 exports.getComments = async (req, res, next) => {
     try {
         checkIfValidDate(req.params.id)
-        const commentList = await getCommentList(req.params.id);
+        const commentList = await db.Comment.findAll({ where: {imgId: req.params.id}}); //await getCommentList(req.params.id);
         const result = await getCommentDetails(commentList, req.session.email);
-        res.status(200).json(result);
+        return res.status(200).json(result);
     } catch (error) {
         return res.status(400).json({ message: error.message });
     }
 }
 
-const getCommentList = async (resourceId) => {
+/*const getCommentList = async (resourceId) => {
     try{
         return await db.Comment.findAll({ where: {imgId: resourceId}});
     } catch(error){
         throw new Error(error.message)
     }
-}
+}*/
 
 const getCommentDetails = async (commentList, userEmail) => {
     try{
@@ -133,8 +134,8 @@ exports.deleteComment = async (req, res) => {
         const resourceId = Number(req.params.id);
         await db.Comment.update({status: true}, {where: {id: resourceId}});
         // Return a success response
-        res.status(200).json({message: "Success"});
+        return res.status(200).json({message: "Success"});
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error.message });
     }
 }

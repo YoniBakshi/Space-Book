@@ -20,6 +20,7 @@ exports.getLogin = (req, res) => {
         });
     }
 }
+
 exports.getLoguot = (req, res) => {
     console.log("login get")
     if (req.session.connection)
