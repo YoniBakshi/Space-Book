@@ -1,7 +1,7 @@
 const db = require('../models')
 const MyError = require("../utils/utils");
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
+const saltRounds = 10;              // TODO
 
 // Next was clicked - load the next pagee which is register password
 exports.getRegisterPassword = (req, res) => {

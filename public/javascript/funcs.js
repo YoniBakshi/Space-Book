@@ -71,7 +71,7 @@
             prior2Dates = new Date()
             document.getElementById('currentDate').valueAsDate = pickedDate
             prior2Dates.setDate(prior2Dates.getDate() - 2);
-            pickedDate = `${pickedDate.getFullYear()}-${pickedDate.getMonth() + 1}-${pickedDate.getDate()}`
+            pickedDate = `${pickedDate.getFullYear()}-${pickedDate.getMonth() + 1}-${pickedDate.getDate()-1}`
             prior2Dates = `${prior2Dates.getFullYear()}-${prior2Dates.getMonth() + 1}-${prior2Dates.getDate()}`
             clickedImg = pickedDate
         }
@@ -435,6 +435,7 @@
      * @returns {string} string HTML of submitted comment
      */
     const addCommentsToModal = (data) => {
+        console.log(data)
         let commentInfo = ``;
         data.forEach(function (item) {
             let delLink = item.owner ?

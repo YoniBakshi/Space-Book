@@ -1,6 +1,4 @@
 const db = require("../models");
-const MyError = require("../utils/utils");
-const createError = require("http-errors");
 
 /**
  * This function is responsible for rendering the homePage view and providing
@@ -27,20 +25,22 @@ exports.postHome = async (req, res,next) => {
         // Retrieve comment, image ID, and user email from request body
         const comment = req.body.currComment;
         const imgId = req.body.id;
-        const userEmail = req.session.email;
+        const userId = req.session.userid;
+        console.log(userId)
+        console.log(req.session.userid)
         const status = false;
 
         // Validate request body
-        validateRequestBody(userEmail, imgId, comment, res);
+        validateRequestBody(userId, imgId, comment, res);
         // Check if userName is a string
-        checkIfString(userEmail, 'userId', res);
+        checkIfString(userId, 'userId', res);
         // Check if id is a valid date
         checkIfValidDate(imgId, res);
         // Check if currComment is a string
         checkIfString(comment, 'comment', res);
 
         // Create new comment
-        const c = await db.Comment.create({userEmail, comment, imgId, status});
+        const c = await db.Comment.create({userId, comment, imgId, status});
         return res.json(c);
 
     } catch (error) {
@@ -56,8 +56,8 @@ exports.postHome = async (req, res,next) => {
  */
 function validateRequestBody(userEmail, imgId, comment, res) {
     if (!userEmail || !imgId || !comment) {
-        return res.status(400).json({ message: 'All fields are required' });
-    }
+        throw new Error(`All fields are required` );
+}
 }
 
 /**
@@ -88,36 +88,35 @@ function checkIfValidDate(theDate, res) {
 exports.getComments = async (req, res, next) => {
     try {
         checkIfValidDate(req.params.id)
-        const commentList = await db.Comment.findAll({ where: {imgId: req.params.id}}); //await getCommentList(req.params.id);
-        const result = await getCommentDetails(commentList, req.session.email);
+        // Must have "await"
+        const result = await getCommentDetails(req.params.id, req.session.userid);
         return res.status(200).json(result);
     } catch (error) {
         return res.status(400).json({ message: error.message });
     }
 }
 
-/*const getCommentList = async (resourceId) => {
+const getCommentDetails = async (imgDate, currUserId) => {
     try{
-        return await db.Comment.findAll({ where: {imgId: resourceId}});
-    } catch(error){
-        throw new Error(error.message)
-    }
-}*/
+        const commentList = await db.Comment.findAll({where: {imgId:imgDate,status:false},
+        include: [{
+            model: db.User,
+            attributes: [`firstName`, `lastName`],
+        }]})
 
-const getCommentDetails = async (commentList, userEmail) => {
-    try{
         const result = [];
-        for (const item of commentList) {
-            const userOwner = await db.User.findOne({where: {email: item.dataValues.userEmail}})
-            if(!item.dataValues.status){
-                const firstName = userOwner.dataValues.firstName
-                const lastName = userOwner.dataValues.lastName
-                const commentId = item.dataValues.id
-                const comment = item.dataValues.comment
-                const owner = userEmail === userOwner.dataValues.email
-                result.push({firstName, lastName, owner, commentId, comment})
-            }
-        }
+
+        commentList.forEach((currComment)=>{
+            const firstName = currComment.dataValues.User.dataValues.firstName
+            const lastName = currComment.dataValues.User.dataValues.lastName
+            const commentId = currComment.dataValues.id
+            const comment = currComment.dataValues.comment
+            const owner = currUserId === currComment.dataValues.userId.toString()
+            console.log(typeof currUserId+"   "+ typeof currComment.dataValues.userId )
+            //console.log(currComment)
+            console.log("f: "+firstName+" l: " +lastName+" cI: "+ commentId +" co: "+ comment+" on: "+owner)
+            result.push({firstName, lastName, owner, commentId, comment})
+        })
         return result;
     }catch(error){
         throw new Error(error.message)

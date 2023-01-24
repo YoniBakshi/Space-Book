@@ -1,4 +1,3 @@
-//const Cookies = require('cookies')
 const db = require('../models')
 const MyError = require('../utils/utils')
 /**
