@@ -2,8 +2,13 @@ const db = require("../models");
 const MyError = require("../utils/utils");
 const bcrypt = require('bcrypt');
 
+/**
+ * Loads Login Page, if there's an existing session - Home/feed page will be loaded
+ * @param req
+ * @param res
+ */
 exports.getLogin = (req, res) => {
-    console.log("login get")
+
     if (req.session.connection) {
         res.redirect('/home')
     } else {
@@ -11,22 +16,26 @@ exports.getLogin = (req, res) => {
             titlePage: 'login',
             msgP1: '',
             msgP2: '',
-            //  msgP1: 'Please Sign-In',        // TODO
-            //  msgP2: 'Exercise 6 (Part 1)',
             backgroundImage: 'LoginBackground.png',
             message: req.cookies.message
         });
     }
 }
 
-exports.getLoguot = (req, res) => {
-    console.log("login get")
+/**
+ * Logout and delete session of this user and return to login page.
+ */
+exports.getLogout = (req, res) => {
+
     if (req.session.connection)
         delete req.session.connection
 
     res.redirect('/')
 }
 
+/**
+ * Validate Email and password with User DB , if valid - A session will be started, if not - Error message will appear if not exist or not matching data. (For security reasons)
+ */
 exports.postLogin = async (req, res) => {
     try {
         const validUser = await db.User.findOne({where: {email: req.body.emailLogin}})

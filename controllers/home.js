@@ -20,14 +20,12 @@ exports.getHome = (req, res) => {
  * @param res
  * @returns {Promise<*>}
  */
-exports.postHome = async (req, res,next) => {
+exports.postHome = async (req, res) => {
     try {
         // Retrieve comment, image ID, and user email from request body
         const comment = req.body.currComment;
         const imgId = req.body.id;
         const userId = req.session.userid;
-        console.log(userId)
-        console.log(req.session.userid)
         const status = false;
 
         // Validate request body
@@ -44,7 +42,7 @@ exports.postHome = async (req, res,next) => {
         return res.json(c);
 
     } catch (error) {
-        return res.status(400).json({ message: error.message });
+        return res.status(400).json({message: error.message});
     }
 }
 
@@ -56,8 +54,8 @@ exports.postHome = async (req, res,next) => {
  */
 function validateRequestBody(userEmail, imgId, comment, res) {
     if (!userEmail || !imgId || !comment) {
-        throw new Error(`All fields are required` );
-}
+        throw new Error(`All fields are required`);
+    }
 }
 
 /**
@@ -67,7 +65,8 @@ function validateRequestBody(userEmail, imgId, comment, res) {
  */
 function checkIfString(userInfo, variableName, res) {
     if (typeof userInfo !== 'string')
-        throw new Error(`${variableName} must be a string` )}
+        throw new Error(`${variableName} must be a string`)
+}
 
 /**
  * Check if variable is a valid date
@@ -75,58 +74,57 @@ function checkIfString(userInfo, variableName, res) {
  */
 function checkIfValidDate(theDate, res) {
     if (!Date.parse(theDate))
-        throw new Error(`id must be a valid date` )
+        throw new Error(`id must be a valid date`)
 }
 
 /**
- *
- * @param req
- * @param res
- * @param next
- * @returns {Promise<*>}
+ * Validate date of image to be opened in Modal and Get comments to specific this specific picture id = date .
  */
-exports.getComments = async (req, res, next) => {
+exports.getComments = async (req, res) => {
     try {
         checkIfValidDate(req.params.id)
         // Must have "await"
         const result = await getCommentDetails(req.params.id, req.session.userid);
         return res.status(200).json(result);
     } catch (error) {
-        return res.status(400).json({ message: error.message });
+        return res.status(400).json({message: error.message});
     }
 }
 
+/**
+ * Query once - Using relation between Cooment DB and User DB
+ * @param imgDate = id of image
+ * @param currUserId
+ */
 const getCommentDetails = async (imgDate, currUserId) => {
-    try{
-        const commentList = await db.Comment.findAll({where: {imgId:imgDate,status:false},
-        include: [{
-            model: db.User,
-            attributes: [`firstName`, `lastName`],
-        }]})
+    try {
+        const commentList = await db.Comment.findAll({
+            where: {imgId: imgDate, status: false},
+            include: [{
+                model: db.User,
+                attributes: [`firstName`, `lastName`],
+            }]
+        })
 
         const result = [];
 
-        commentList.forEach((currComment)=>{
+        commentList.forEach((currComment) => {
             const firstName = currComment.dataValues.User.dataValues.firstName
             const lastName = currComment.dataValues.User.dataValues.lastName
             const commentId = currComment.dataValues.id
             const comment = currComment.dataValues.comment
             const owner = currUserId === currComment.dataValues.userId.toString()
-            console.log(typeof currUserId+"   "+ typeof currComment.dataValues.userId )
-            //console.log(currComment)
-            console.log("f: "+firstName+" l: " +lastName+" cI: "+ commentId +" co: "+ comment+" on: "+owner)
             result.push({firstName, lastName, owner, commentId, comment})
         })
+
         return result;
-    }catch(error){
+    } catch (error) {
         throw new Error(error.message)
     }
 }
 
-
 /**
  * HELLO I DELETE COMMENTS YA
- *
  */
 exports.deleteComment = async (req, res) => {
     try {
@@ -135,6 +133,6 @@ exports.deleteComment = async (req, res) => {
         // Return a success response
         return res.status(200).json({message: "Success"});
     } catch (error) {
-        return res.status(400).json({ message: error.message });
+        return res.status(400).json({message: error.message});
     }
 }

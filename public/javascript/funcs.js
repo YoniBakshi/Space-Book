@@ -2,26 +2,13 @@
 
 (function () {
     const APIURL = 'https://api.nasa.gov/planetary/apod';
-    const APIKEY = 'bSGWMXT6SYcW828JaN298lSZgoQCmfREsCZZrgcE';
+    const APIKEY = '2RBmHh2WEpeRcCSKy5Th3DFJaJabbzXHjaufLTlX';
 
     document.addEventListener("DOMContentLoaded", function () {
         // At first, default date is set up to date - display NASA's daily media of last 3 days.
         date.initDate()
         getDataFromNASA()
-        let imagesLoaded = 0;
-
-        /*        document.addEventListener("scroll", () => {
-                    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight-1) {
-                        console.log(imagesLoaded)
-                        if (imagesLoaded % 2 === 0) {
-                            let currDate = new Date(date.getNewDate().start);
-                            currDate.setDate(currDate.getDate() - 1);
-                            date.updateDate(currDate);
-                        }
-                        imagesLoaded++;
-                    }
-                });*/
-
+        // Infinite scroll - loading 3 pictures every time
         document.addEventListener("scroll", () => {
             if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 1) {
                 let currDate = new Date(date.getNewDate().start)
@@ -29,9 +16,9 @@
                 date.updateDate(currDate)
             }
         })
-        //get a picked date
+        // Get a picked date
         document.getElementById("currentDate").addEventListener("change", (event) => {
-            //clear image card
+            // Clear image card
             document.getElementById("imgCard").innerHTML = "";
             let currDate = new Date(event.target["value"])
             date.updateDate(currDate)
@@ -49,8 +36,6 @@
             if (elm.key === 'Enter')
                 getDataPostedComments(elm)
         });
-        // Infinite scroll - loading 3 pictures every time
-
     });
 
     /**
@@ -71,7 +56,7 @@
             prior2Dates = new Date()
             document.getElementById('currentDate').valueAsDate = pickedDate
             prior2Dates.setDate(prior2Dates.getDate() - 2);
-            pickedDate = `${pickedDate.getFullYear()}-${pickedDate.getMonth() + 1}-${pickedDate.getDate()-1}`
+            pickedDate = `${pickedDate.getFullYear()}-${pickedDate.getMonth() + 1}-${pickedDate.getDate() - 1}`
             prior2Dates = `${prior2Dates.getFullYear()}-${prior2Dates.getMonth() + 1}-${prior2Dates.getDate()}`
             clickedImg = pickedDate
         }
@@ -121,7 +106,6 @@
     }();
 
     /**
-     *
      * GET request - send to NASA to get the data of requested dates.
      * Error message = same as NASA's
      */
@@ -176,7 +160,6 @@
             }
             return response.json();
         }).catch(function (error) {
-            console.log(error)
             updateMainContainerWithError(error.message);
         });
     }
@@ -186,7 +169,6 @@
      * @param error
      */
     function updateMainContainerWithError(error) {
-        console.log(error)
         createToggle("main-container")
         createToggle("err")
         document.getElementById("err").innerHTML = `<h1 class="text-bg-light">${error}</h1>`;
@@ -230,7 +212,6 @@
                 elem.addEventListener("click", delPost);
             });
         }).catch(function (error) {
-            console.log(error)
             updateMainContainerWithError(error);
         }).finally(() => {
             createToggle("spinner-comments")
@@ -435,11 +416,11 @@
      * @returns {string} string HTML of submitted comment
      */
     const addCommentsToModal = (data) => {
-        console.log(data)
         let commentInfo = ``;
         data.forEach(function (item) {
             let delLink = item.owner ?
                 ` <a class="btn btn-link mr-2 to-del"  id="del-${item.commentId}">delete</a>` : ``
+
             commentInfo +=
                 `<div class="card mb-4">
                         <div class="card-body">

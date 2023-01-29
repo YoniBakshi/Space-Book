@@ -1,15 +1,11 @@
 const db = require('../models')
 const MyError = require('../utils/utils')
-/**
- * Register button was clicked or time expired /
- * @param req
- * @param res
- * @param next
- */
-exports.getRegister = (req, res, next) =>{
-    console.log("reg get")
 
-    // TODO validation
+/**
+ * Register button was clicked or time expired
+ */
+exports.getRegister = (req, res) => {
+
     // Contains all the data of current cookie or if theres no data so no cookie
     let registerData = req.cookies.registerData ? req.cookies.registerData : {}
 
@@ -22,10 +18,14 @@ exports.getRegister = (req, res, next) =>{
         registerData});
 }
 
-exports.postRegister = async (req, res, next) => {
+/**
+ * Receive input and save data of part 1 registration on a cookie for 30 seconds.
+ */
+exports.postRegister = async (req, res) => {
+    // All fields must contain 3-32 letters.
     const userFirstName = req.body.firstName.trim();
     const userLastName = req.body.lastName.trim();
-    const userEmail = req.body.emailRegister.trim().toLowerCase();
+    const userEmail = req.body.emailRegister.trim().toLowerCase();      // No difference between uppercase or lowercase as requested.
 
     try {
         if(req.cookies.registerData) {

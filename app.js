@@ -10,9 +10,15 @@ let session = require('express-session')
 const Sequelize = require('sequelize')
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
+exports.preventCashing = (req, res, next) => {
+    res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+    res.set('Pragma', 'no-cache');
+    next()
+}
+
 let app = express();
 
-// view engine setup
+// View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -32,7 +38,7 @@ const myStore = new SequelizeStore({
     db: sequelize
 })
 
-// enable sessions
+// Enable sessions
 app.use(session({
     secret:"somesecretkey",
     store:myStore,
@@ -63,6 +69,7 @@ app.use(function(req, res, next) {
       res.redirect('/')*/
         next();
 });
+
 app.use(function(req, res, next) {
     if (req.session.connection && (req.url === '/' || req.url === '/users/register')) {
         res.redirect('/home');
@@ -81,8 +88,8 @@ app.use(function (req, res, next) {
     next(createError(404));
 });
 
-// Error handler - Middleware               // TODO
-app.use(function (err, req, res, next) {
+// Error handler - Middleware
+app.use(function (err, req, res) {
     // Set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
