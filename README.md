@@ -1,12 +1,7 @@
-﻿# ex6-express-neviiim-ex06-yehonatan-bakshi-hila-saadon
-
-# Authors:
-Yehonatan Bakshi  , Email : yehonatanba@edu.hac.ac.il
-
-Hila Saadon  , Email : hilasaa@edu.hac.ac.il
 
 
 README :
+- This project involves building a web application with both server-side and client-side components using Node.js, Express, EJS, JavaScript, HTML, CSS, and a database. 
 - In this Express project we've created a social website using NASA's media.
 - Interacting with NASA's data by using REST API, using DataBase to save Users and another DataBase to save all Comments.
 - DataBase User columns :
@@ -64,3 +59,8 @@ npm install express-session
 npm install bcrypt
 npm install
 npm install scroll
+
+Contributors :
+Yehonatan Bakshi
+
+Hila Saadon 
